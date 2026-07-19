@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EVA MARIE – Activewear & Clubwear Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'jet': '#1A1A1A',
+            'pink-sculpt': '#D9539A',
+            'lavender': '#B79FD1',
+            'gold': '#C9A84C',
+            'berry': '#9B1B30',
+            'olive': '#6B7452',
+            'bubblegum': '#F0A6C4',
+            'cocoa': '#6B4A3A',
+            'cream': '#EFE7DA',
+            'sky-em': '#9FC9E8',
+            'card': '#222222',
+            'card-hover': '#2A2A2A',
+            'muted': '#999999',
+            'hover-pink': '#E8649F',
+          },
+          fontFamily: {
+            'bebas': ['"Bebas Neue"', 'sans-serif'],
+            'inter': ['"Inter"', 'sans-serif'],
+            'playfair': ['"Playfair Display"', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root {
+      --jet-black: #1A1A1A;
+      --pink-sculpt: #D9539A;
+      --lavender: #B79FD1;
+      --gold: #C9A84C;
+      --berry-red: #9B1B30;
+      --olive: #6B7452;
+      --bubblegum: #F0A6C4;
+      --cocoa: #6B4A3A;
+      --cream: #EFE7DA;
+      --sky: #9FC9E8;
+      --card-bg: #222222;
+      --card-hover: #2A2A2A;
+      --white: #FFFFFF;
+      --muted: #999999;
+      --hover-pink: #E8649F;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--jet-black); color: var(--white); overflow-x: hidden; }
+    .font-bebas { font-family: 'Bebas Neue', sans-serif; }
+    .font-playfair { font-family: 'Playfair Display', serif; }
+
+    .announce-bar { background: var(--pink-sculpt); overflow: hidden; height: 36px; }
+    .announce-msg { position: absolute; width: 100%; text-align: center; opacity: 0; transition: opacity 0.5s ease; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; line-height: 36px; }
+    .announce-msg.active { opacity: 1; }
+
+    @keyframes heroGrad {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .hero-gradient {
+      background: linear-gradient(135deg, rgba(217,83,154,0.12) 0%, rgba(183,159,209,0.1) 30%, rgba(26,26,26,0.95) 60%, rgba(155,27,48,0.08) 100%);
+      background-size: 300% 300%;
+      animation: heroGrad 12s ease infinite;
+    }
+
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .product-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .product-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(217,83,154,0.15); }
+    .product-card .add-btn { opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
+    .product-card:hover .add-btn { opacity: 1; transform: translateY(0); }
+
+    .size-popup { display: none; }
+    .size-popup.active { display: flex; }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #111; }
+    ::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--pink-sculpt); }
+
+    .cart-panel { transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+    .cart-panel.open { transform: translateX(0); }
+
+    .modal-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .modal-content { transform: scale(0.95) translateY(20px); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+    .modal-overlay.open .modal-content { transform: scale(1) translateY(0); }
+
+    .toast { transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+    .toast.show { transform: translateX(0); }
+
+    .mobile-menu { transform: translateX(-100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+    .mobile-menu.open { transform: translateX(0); }
+
+    .carousel-track { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+    .carousel-track > * { scroll-snap-align: start; }
+    .carousel-track::-webkit-scrollbar { display: none; }
+
+    .shipping-progress { transition: width 0.5s ease; }
+
+    .cat-tile { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .cat-tile:hover { transform: scale(1.03); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+
+    .filter-btn { transition: all 0.2s ease; }
+    .filter-btn.active { background: var(--pink-sculpt); color: white; }
+
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .accordion-content.open { max-height: 500px; }
+
+    .outline-text {
+      -webkit-text-stroke: 2px var(--pink-sculpt);
+      color: transparent;
+    }
+
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    .fade-in { animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .heart-btn.liked { color: var(--pink-sculpt); }
+
+    .mosaic-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(4, 20px);
+      gap: 3px;
+      opacity: 0.15;
+    }
+    .mosaic-cell { border-radius: 2px; }
+
+    /* AI Image shimmer */
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .img-shimmer {
+      background: linear-gradient(90deg, #222 25%, #2a2a2a 50%, #222 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.5s infinite ease-in-out;
+    }
+    .img-fade-in {
+      animation: imgFadeIn 0.6s ease forwards;
+    }
+    @keyframes imgFadeIn {
+      from { opacity: 0; transform: scale(1.02); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Checkout styles */
+    .checkout-input {
+      background: #222;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #fff;
+      padding: 12px 14px;
+      font-size: 14px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .checkout-input:focus {
+      border-color: var(--pink-sculpt);
+    }
+    .checkout-input.error {
+      border-color: var(--pink-sculpt);
+    }
+    .checkout-input::placeholder { color: #666; }
+    .checkout-label {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .error-msg {
+      font-size: 11px;
+      color: var(--pink-sculpt);
+      margin-top: 4px;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+
+    .step-circle {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+      transition: all 0.3s ease;
+    }
+    .step-circle.inactive { background: #333; color: #666; }
+    .step-circle.active { background: var(--pink-sculpt); color: #fff; }
+    .step-circle.completed { background: var(--gold); color: #1A1A1A; }
+
+    .step-line {
+      flex: 1; height: 2px; background: #333;
+      transition: background 0.3s ease;
+    }
+    .step-line.completed { background: var(--gold); }
+
+    .shipping-card {
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #222;
+    }
+    .shipping-card.selected {
+      border-color: var(--pink-sculpt);
+      background: rgba(217,83,154,0.05);
+    }
+
+    /* Order confirmed checkmark */
+    @keyframes drawCheck {
+      0% { stroke-dashoffset: 50; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes scaleCircle {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .confirm-circle {
+      animation: scaleCircle 0.5s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    .confirm-check {
+      stroke-dasharray: 50;
+      stroke-dashoffset: 50;
+      animation: drawCheck 0.4s 0.4s ease forwards;
+    }
+
+    /* Size guide modal */
+    .sg-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .sg-overlay.open { opacity: 1; pointer-events: auto; }
+
+    /* Recently viewed strip */
+    .rv-card { transition: transform 0.2s ease; }
+    .rv-card:hover { transform: translateY(-3px); }
+  </style>
+</head>
+<body data-id="0" class="min-h-screen bg-jet font-inter">
+  <app-icon data-id="1" hidden data-icon="shopping-bag" data-palette="Red"></app-icon>
+
+  <!-- TOAST NOTIFICATION -->
+  <div data-id="2" id="toast" class="toast fixed bottom-6 right-6 z-[200] bg-pink-sculpt px-5 py-3 rounded-xl flex items-center gap-3 shadow-2xl">
+    <span data-id="3" class="text-white font-semibold">✓</span>
+    <span data-id="4" id="toast-msg" class="text-sm text-white font-medium">Added to cart</span>
+  </div>
+
+  <!-- ANNOUNCEMENT BAR -->
+  <div data-id="5" class="announce-bar relative z-50 flex items-center justify-center">
+    <div data-id="6" class="announce-msg active text-white font-medium tracking-widest">FREE SHIPPING ON ORDERS $75+</div>
+    <div data-id="7" class="announce-msg text-white font-medium tracking-widest">NEW CAPSULE DROP — SHOP THE COLLECTION</div>
+    <div data-id="8" class="announce-msg text-white font-medium tracking-widest">EARN POINTS WITH EVERY PURCHASE — JOIN EM REWARDS</div>
+  </div>
+
+  <!-- HEADER / NAV -->
+  <header data-id="9" id="main-header" class="sticky top-0 z-40 bg-jet/95 backdrop-blur-md border-b border-white/5">
+    <div data-id="10" class="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between h-16">
+      <div data-id="11" class="flex items-center gap-3 cursor-pointer" id="logo-home">
+        <div data-id="12" class="w-10 h-10 rounded-lg bg-gradient-to-br from-gold to-yellow-700 flex items-center justify-center">
+          <span data-id="13" class="font-bebas text-jet text-xl font-bold leading-none">EM</span>
+        </div>
+        <span data-id="14" class="font-bebas text-white text-xl tracking-wider hidden sm:block">EVA MARIE</span>
+      </div>
+
+      <nav data-id="15" class="hidden lg:flex items-center gap-8">
+        <a data-id="16" href="#" class="nav-link text-sm font-medium text-white/80 hover:text-pink-sculpt transition-colors tracking-wide uppercase" data-page="home">Home</a>
+        <a data-id="17" href="#" class="nav-link text-sm font-medium text-white/80 hover:text-pink-sculpt transition-colors tracking-wide uppercase" data-page="shop">Shop All</a>
+        <a data-id="18" href="#" class="nav-link text-sm font-medium text-white/80 hover:text-pink-sculpt transition-colors tracking-wide uppercase" data-page="sets">Sets</a>
+        <a data-id="19" href="#" class="nav-link text-sm font-medium text-white/80 hover:text-pink-sculpt transition-colors tracking-wide uppercase" data-page="tops">Tops</a>
+        <a data-id="20" href="#" class="nav-link text-sm font-medium text-white/80 hover:text-pink-sculpt transition-colors tracking-wide uppercase" data-page="bottoms">Bottoms</a>
+        <a data-id="21" href="#" class="nav-link text-sm font-medium text-white/80 hover:text-pink-sculpt transition-colors tracking-wide uppercase" data-page="statement">Statement</a>
+        <a data-id="22" href="#" class="nav-link text-sm font-medium text-white/80 hover:text-pink-sculpt transition-colors tracking-wide uppercase" data-page="about">About</a>
+      </nav>
+
+      <div data-id="23" class="flex items-center gap-4">
+        <button data-id="24" id="search-toggle" class="p-2 text-white/70 hover:text-pink-sculpt transition-colors">
+          <i data-id="25" data-lucide="search" class="w-5 h-5"></i>
+        </button>
+        <button data-id="26" id="wishlist-nav-btn" class="p-2 text-white/70 hover:text-pink-sculpt transition-colors relative">
+          <i data-id="27" data-lucide="heart" class="w-5 h-5"></i>
+          <span data-id="28" id="wishlist-badge" class="absolute -top-1 -right-1 bg-pink-sculpt text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
+        </button>
+        <button data-id="29" id="cart-toggle" class="p-2 text-white/70 hover:text-pink-sculpt transition-colors relative">
+          <i data-id="30" data-lucide="shopping-bag" class="w-5 h-5"></i>
+          <span data-id="31" id="cart-badge" class="absolute -top-1 -right-1 bg-berry text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
+        </button>
+        <button data-id="32" id="mobile-menu-btn" class="lg:hidden p-2 text-white/70 hover:text-pink-sculpt transition-colors">
+          <i data-id="33" data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+
+    <div data-id="34" id="search-bar" class="hidden bg-card border-t border-white/5">
+      <div data-id="35" class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center gap-3">
+        <i data-id="36" data-lucide="search" class="w-5 h-5 text-muted"></i>
+        <input data-id="37" type="text" id="search-input" placeholder="Search products..." class="bg-transparent border-none outline-none text-white text-sm flex-1 placeholder-muted" />
+        <button data-id="38" id="search-close" class="text-muted hover:text-white">
+          <i data-id="39" data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MOBILE MENU -->
+  <nav data-id="40" id="mobile-menu" class="mobile-menu fixed inset-0 bg-jet z-50 flex flex-col p-6 lg:hidden">
+    <div data-id="41" class="flex items-center justify-between mb-10">
+      <div data-id="42" class="flex items-center gap-3">
+        <div data-id="43" class="w-10 h-10 rounded-lg bg-gradient-to-br from-gold to-yellow-700 flex items-center justify-center">
+          <span data-id="44" class="font-bebas text-jet text-xl font-bold leading-none">EM</span>
+        </div>
+        <span data-id="45" class="font-bebas text-white text-xl tracking-wider">EVA MARIE</span>
+      </div>
+      <button data-id="46" id="mobile-menu-close" class="p-2 text-white">
+        <i data-id="47" data-lucide="x" class="w-6 h-6"></i>
+      </button>
+    </div>
+    <div data-id="48" class="flex flex-col gap-6">
+      <a data-id="49" href="#" class="mobile-nav-link font-bebas text-3xl text-white/80 hover:text-pink-sculpt transition-colors tracking-wider" data-page="home">HOME</a>
+      <a data-id="50" href="#" class="mobile-nav-link font-bebas text-3xl text-white/80 hover:text-pink-sculpt transition-colors tracking-wider" data-page="shop">SHOP ALL</a>
+      <a data-id="51" href="#" class="mobile-nav-link font-bebas text-3xl text-white/80 hover:text-pink-sculpt transition-colors tracking-wider" data-page="sets">SETS</a>
+      <a data-id="52" href="#" class="mobile-nav-link font-bebas text-3xl text-white/80 hover:text-pink-sculpt transition-colors tracking-wider" data-page="tops">TOPS</a>
+      <a data-id="53" href="#" class="mobile-nav-link font-bebas text-3xl text-white/80 hover:text-pink-sculpt transition-colors tracking-wider" data-page="bottoms">BOTTOMS</a>
+      <a data-id="54" href="#" class="mobile-nav-link font-bebas text-3xl text-white/80 hover:text-pink-sculpt transition-colors tracking-wider" data-page="statement">STATEMENT</a>
+      <a data-id="55" href="#" class="mobile-nav-link font-bebas text-3xl text-white/80 hover:text-pink-sculpt transition-colors tracking-wider" data-page="about">ABOUT</a>
+      <a data-id="56" href="#" class="mobile-nav-link font-bebas text-3xl text-white/80 hover:text-pink-sculpt transition-colors tracking-wider" data-page="wishlist">WISHLIST</a>
+    </div>
+    <div data-id="57" class="mt-auto pt-8 border-t border-white/10">
+      <p data-id="58" class="text-muted text-xs uppercase tracking-widest">Activewear / Clubwear</p>
+      <p data-id="59" class="font-bebas text-pink-sculpt text-lg mt-2 tracking-wider">WEAR IT. OWN IT.</p>
+    </div>
+  </nav>
+
+  <!-- CART PANEL -->
+  <div data-id="60" id="cart-overlay" class="fixed inset-0 bg-black/60 z-50 hidden"></div>
+  <aside data-id="61" id="cart-panel" class="cart-panel fixed top-0 right-0 w-full max-w-md h-full bg-[#111111] z-[60] flex flex-col">
+    <div data-id="62" class="flex items-center justify-between p-5 border-b border-white/10">
+      <h2 data-id="63" class="font-bebas text-2xl tracking-wider">YOUR CART</h2>
+      <button data-id="64" id="cart-close" class="p-2 text-white/70 hover:text-white">
+        <i data-id="65" data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div data-id="66" id="cart-items" class="flex-1 overflow-y-auto p-5">
+      <div data-id="67" id="cart-empty" class="flex flex-col items-center justify-center h-full gap-4 text-center">
+        <i data-id="68" data-lucide="shopping-bag" class="w-12 h-12 text-muted/30"></i>
+        <p data-id="69" class="text-muted text-sm">Your cart is empty</p>
+        <button data-id="70" id="start-shopping-btn" class="bg-pink-sculpt text-white px-6 py-3 rounded-xl font-medium text-sm hover:bg-hover-pink transition-colors">START SHOPPING</button>
+      </div>
+      <div data-id="71" id="cart-list" class="hidden space-y-4"></div>
+    </div>
+    <div data-id="72" id="cart-footer" class="hidden border-t border-white/10 p-5 space-y-4">
+      <div data-id="73" class="space-y-2">
+        <p data-id="74" class="text-xs text-muted" id="shipping-msg">FREE SHIPPING on orders over $75</p>
+        <div data-id="75" class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+          <div data-id="76" id="shipping-bar" class="h-full bg-gradient-to-r from-pink-sculpt to-lavender rounded-full shipping-progress" style="width:0%"></div>
+        </div>
+      </div>
+      <div data-id="77" class="flex items-center justify-between">
+        <span data-id="78" class="text-sm text-muted uppercase tracking-wide">Subtotal</span>
+        <span data-id="79" id="cart-subtotal" class="font-playfair italic text-xl text-white">$0</span>
+      </div>
+      <button data-id="80" id="checkout-btn" class="w-full bg-pink-sculpt text-white py-4 rounded-xl font-bebas text-xl tracking-wider hover:bg-hover-pink transition-colors">CHECKOUT</button>
+      <button data-id="81" id="continue-shopping-btn" class="w-full text-center text-sm text-muted hover:text-white transition-colors">Continue Shopping</button>
+    </div>
+  </aside>
+
+  <!-- SIZE GUIDE MODAL -->
+  <div data-id="82" id="size-guide-modal" class="sg-overlay fixed inset-0 bg-black/70 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
+    <div data-id="83" class="bg-jet max-w-2xl w-full max-h-[85vh] overflow-y-auto rounded-2xl border border-white/10 p-6 md:p-8 relative">
+      <button data-id="84" id="sg-close" class="absolute top-4 right-4 p-2 text-muted hover:text-white transition-colors"><i data-id="85" data-lucide="x" class="w-5 h-5"></i></button>
+      <h2 data-id="86" class="font-bebas text-3xl tracking-wider text-white mb-2">SIZE GUIDE</h2>
+      <p data-id="87" class="text-muted text-sm mb-6">All measurements in inches. Measure over undergarments for best results.</p>
+      <div data-id="88" class="mb-6">
+        <h3 data-id="89" class="font-bebas text-lg tracking-wider text-pink-sculpt mb-3">HOW TO MEASURE</h3>
+        <div data-id="90" class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-white/80">
+          <div data-id="91" class="bg-white/5 rounded-xl p-4"><strong data-id="92" class="text-white block mb-1">Bust</strong>Measure around the fullest part of your chest.</div>
+          <div data-id="93" class="bg-white/5 rounded-xl p-4"><strong data-id="94" class="text-white block mb-1">Waist</strong>Measure around your natural waistline.</div>
+          <div data-id="95" class="bg-white/5 rounded-xl p-4"><strong data-id="96" class="text-white block mb-1">Hips</strong>Measure around the widest part of your hips.</div>
+        </div>
+      </div>
+      <div data-id="97" class="overflow-x-auto">
+        <table data-id="98" class="w-full text-sm text-left">
+          <thead data-id="99"><tr data-id="100" class="border-b border-white/10">
+            <th data-id="101" class="py-3 px-4 text-muted uppercase tracking-wider text-xs font-medium">Size</th>
+            <th data-id="102" class="py-3 px-4 text-muted uppercase tracking-wider text-xs font-medium">US</th>
+            <th data-id="103" class="py-3 px-4 text-muted uppercase tracking-wider text-xs font-medium">Bust</th>
+            <th data-id="104" class="py-3 px-4 text-muted uppercase tracking-wider text-xs font-medium">Waist</th>
+            <th data-id="105" class="py-3 px-4 text-muted uppercase tracking-wider text-xs font-medium">Hips</th>
+          </tr></thead>
+          <tbody data-id="106" class="text-white/80">
+            <tr data-id="107" class="border-b border-white/5"><td data-id="108" class="py-3 px-4 font-medium text-white">XS</td><td data-id="109" class="py-3 px-4">0–2</td><td data-id="110" class="py-3 px-4">30–32</td><td data-id="111" class="py-3 px-4">24–26</td><td data-id="112" class="py-3 px-4">34–36</td></tr>
+            <tr data-id="113" class="border-b border-white/5"><td data-id="114" class="py-3 px-4 font-medium text-white">S</td><td data-id="115" class="py-3 px-4">4–6</td><td data-id="116" class="py-3 px-4">32–34</td><td data-id="117" class="py-3 px-4">26–28</td><td data-id="118" class="py-3 px-4">36–38</td></tr>
+            <tr data-id="119" class="border-b border-white/5"><td data-id="120" class="py-3 px-4 font-medium text-white">M</td><td data-id="121" class="py-3 px-4">8–10</td><td data-id="122" class="py-3 px-4">34–36</td><td data-id="123" class="py-3 px-4">28–30</td><td data-id="124" class="py-3 px-4">38–40</td></tr>
+            <tr data-id="125" class="border-b border-white/5"><td data-id="126" class="py-3 px-4 font-medium text-white">L</td><td data-id="127" class="py-3 px-4">12–14</td><td data-id="128" class="py-3 px-4">36–38</td><td data-id="129" class="py-3 px-4">30–32</td><td data-id="130" class="py-3 px-4">40–42</td></tr>
+            <tr data-id="131"><td data-id="132" class="py-3 px-4 font-medium text-white">XL</td><td data-id="133" class="py-3 px-4">16–18</td><td data-id="134" class="py-3 px-4">38–40</td><td data-id="135" class="py-3 px-4">32–34</td><td data-id="136" class="py-3 px-4">42–44</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p data-id="137" class="text-xs text-muted mt-4">Model wears size S. For a more relaxed fit, we recommend sizing up.</p>
+    </div>
+  </div>
+
+  <!-- PRODUCT MODAL -->
+  <div data-id="138" id="product-modal" class="modal-overlay fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div data-id="139" class="modal-content bg-jet max-w-5xl w-full max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 grid grid-cols-1 md:grid-cols-[1.2fr_1fr]">
+      <div data-id="140" id="modal-visual" class="relative min-h-[350px] md:min-h-[500px] flex items-center justify-center overflow-hidden rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none">
+        <div data-id="141" id="modal-product-img-wrap" class="absolute inset-0 flex items-center justify-center">
+          <img data-id="142" id="modal-product-img" class="w-full h-full object-cover hidden" alt="Product" />
+        </div>
+        <div data-id="143" id="modal-watermark" class="absolute inset-0 flex items-center justify-center font-bebas text-[120px] md:text-[180px] text-white/[0.06] leading-none pointer-events-none select-none"></div>
+        <div data-id="144" id="modal-badge-area" class="absolute top-4 left-4"></div>
+        <span data-id="145" id="modal-ai-label" class="absolute bottom-3 left-3 text-[10px] text-muted/50 hidden">🤖 AI-generated preview</span>
+      </div>
+      <div data-id="146" class="p-6 md:p-8 flex flex-col gap-4 relative">
+        <button data-id="147" id="modal-close" class="absolute top-4 right-4 p-2 text-muted hover:text-white transition-colors">
+          <i data-id="148" data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <p data-id="149" id="modal-code" class="text-gold text-xs uppercase tracking-widest font-medium"></p>
+        <h2 data-id="150" id="modal-name" class="font-bebas text-3xl md:text-4xl tracking-wider leading-tight"></h2>
+        <p data-id="151" id="modal-type" class="text-pink-sculpt text-sm font-medium uppercase tracking-wide"></p>
+        <p data-id="152" id="modal-price" class="font-playfair italic text-2xl md:text-3xl"></p>
+        <div data-id="153" class="space-y-1">
+          <p data-id="154" class="text-xs text-muted uppercase tracking-wide">Colorway</p>
+          <div data-id="155" id="modal-colors" class="flex items-center gap-2"></div>
+        </div>
+        <div data-id="156" class="space-y-2">
+          <p data-id="157" class="text-xs text-muted uppercase tracking-wide">Size</p>
+          <div data-id="158" id="modal-sizes" class="flex items-center gap-2"></div>
+          <button data-id="159" id="modal-size-guide-btn" class="text-xs text-muted hover:text-white underline transition-colors" style="background:none;border:none;cursor:pointer;">SIZE GUIDE</button>
+        </div>
+        <!-- Quantity selector -->
+        <div data-id="160" class="space-y-2">
+          <p data-id="161" class="text-xs text-muted uppercase tracking-wide">Quantity</p>
+          <div data-id="162" class="flex items-center gap-3">
+            <button data-id="163" id="modal-qty-minus" class="w-10 h-10 rounded-lg border border-white/20 flex items-center justify-center text-white hover:border-pink-sculpt transition-colors">−</button>
+            <span data-id="164" id="modal-qty" class="font-bebas text-xl text-white w-8 text-center">1</span>
+            <button data-id="165" id="modal-qty-plus" class="w-10 h-10 rounded-lg border border-white/20 flex items-center justify-center text-white hover:border-pink-sculpt transition-colors">+</button>
+          </div>
+        </div>
+        <button data-id="166" id="modal-add-cart" class="w-full bg-pink-sculpt text-white py-4 rounded-xl font-bebas text-xl tracking-wider hover:bg-hover-pink transition-colors mt-2">ADD TO CART</button>
+        <button data-id="167" id="modal-wishlist" class="w-full border border-white/20 text-white py-3 rounded-xl font-medium text-sm hover:border-pink-sculpt hover:text-pink-sculpt transition-colors flex items-center justify-center gap-2">
+          <i data-id="168" data-lucide="heart" class="w-4 h-4"></i> ADD TO WISHLIST
+        </button>
+        <p data-id="169" id="modal-desc" class="text-sm text-muted leading-relaxed mt-2"></p>
+        <div data-id="170" class="space-y-0 border-t border-white/10 mt-2">
+          <div data-id="171" class="border-b border-white/10">
+            <button data-id="172" class="accordion-btn w-full flex items-center justify-between py-4 text-sm font-medium text-white">SIZE & FIT <i data-id="173" data-lucide="chevron-down" class="w-4 h-4 text-muted transition-transform"></i></button>
+            <div data-id="174" class="accordion-content text-sm text-muted pb-4 leading-relaxed"><p data-id="175">Model wears size S. Fitted silhouette — size up for a relaxed fit. XS: 0-2 | S: 4-6 | M: 8-10 | L: 12-14 | XL: 16-18. High-waist rise sits at the natural waist.</p></div>
+          </div>
+          <div data-id="176" class="border-b border-white/10">
+            <button data-id="177" class="accordion-btn w-full flex items-center justify-between py-4 text-sm font-medium text-white">MATERIALS & CARE <i data-id="178" data-lucide="chevron-down" class="w-4 h-4 text-muted transition-transform"></i></button>
+            <div data-id="179" class="accordion-content text-sm text-muted pb-4 leading-relaxed"><p data-id="180">87% Nylon, 13% Spandex. Four-way stretch compression knit. Moisture-wicking. Machine wash cold, hang dry. Do not bleach. Do not iron directly on embroidery.</p></div>
+          </div>
+          <div data-id="181" class="border-b border-white/10">
+            <button data-id="182" class="accordion-btn w-full flex items-center justify-between py-4 text-sm font-medium text-white">SHIPPING & RETURNS <i data-id="183" data-lucide="chevron-down" class="w-4 h-4 text-muted transition-transform"></i></button>
+            <div data-id="184" class="accordion-content text-sm text-muted pb-4 leading-relaxed"><p data-id="185">Free standard shipping on orders $75+. Standard delivery 5-7 business days. Express 2-3 business days ($12). Free returns within 30 days, unworn with tags attached.</p></div>
+          </div>
+        </div>
+        <!-- Recently Viewed -->
+        <div data-id="186" id="modal-recently-viewed" class="mt-4 hidden">
+          <p data-id="187" class="text-xs text-muted uppercase tracking-widest mb-3">RECENTLY VIEWED</p>
+          <div data-id="188" id="modal-rv-grid" class="grid grid-cols-4 gap-2"></div>
+        </div>
+        <!-- Complete the look -->
+        <div data-id="189" class="mt-4">
+          <p data-id="190" class="text-xs text-muted uppercase tracking-widest mb-3">COMPLETE THE LOOK</p>
+          <div data-id="191" id="modal-related" class="grid grid-cols-2 gap-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <main data-id="192">
+    <!-- HOME PAGE -->
+    <div data-id="193" id="page-home" class="page-section active fade-in">
+      <section data-id="194" class="hero-gradient min-h-screen flex items-center relative overflow-hidden">
+        <div data-id="195" class="max-w-7xl mx-auto px-5 md:px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-10 items-center py-20">
+          <div data-id="196" class="space-y-6 z-10">
+            <p data-id="197" class="text-pink-sculpt text-sm font-semibold tracking-[4px] uppercase">Activewear / Clubwear</p>
+            <h1 data-id="198" class="font-bebas text-6xl sm:text-7xl md:text-8xl lg:text-[90px] text-white leading-[0.95] tracking-wider">WEAR IT.<br data-id="199">OWN IT.</h1>
+            <p data-id="200" class="text-muted text-base md:text-lg max-w-lg leading-relaxed">23 styles. 5 categories. One brand that refuses to choose between the gym and the going-out scene.</p>
+            <div data-id="201" class="flex flex-wrap gap-4 pt-2">
+              <button data-id="202" id="hero-shop-btn" class="bg-pink-sculpt text-white px-8 py-4 rounded-xl font-bebas text-lg tracking-wider hover:bg-hover-pink transition-colors">SHOP THE COLLECTION</button>
+              <button data-id="203" id="hero-look-btn" class="border border-white/30 text-white px-8 py-4 rounded-xl font-bebas text-lg tracking-wider hover:border-pink-sculpt hover:text-pink-sculpt transition-colors">VIEW LOOKBOOK</button>
+            </div>
+          </div>
+          <div data-id="204" class="hidden lg:flex items-center justify-center relative">
+            <div data-id="205" class="relative w-[400px] h-[500px]">
+              <div data-id="206" class="absolute top-0 right-0 w-48 h-64 rounded-2xl bg-gradient-to-br from-pink-sculpt/40 to-pink-sculpt/10 rotate-6 border border-pink-sculpt/20"></div>
+              <div data-id="207" class="absolute top-20 left-0 w-44 h-56 rounded-2xl bg-gradient-to-br from-lavender/30 to-lavender/5 -rotate-3 border border-lavender/20"></div>
+              <div data-id="208" class="absolute bottom-0 right-10 w-40 h-52 rounded-2xl bg-gradient-to-br from-gold/25 to-gold/5 rotate-3 border border-gold/20"></div>
+              <div data-id="209" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-gradient-to-br from-berry/30 to-berry/5 border border-berry/20"></div>
+              <div data-id="210" class="absolute top-10 left-20 font-bebas text-[100px] text-white/[0.04] leading-none select-none pointer-events-none -rotate-12">EM</div>
+              <div data-id="211" class="absolute bottom-10 right-0 font-bebas text-[60px] text-pink-sculpt/[0.08] leading-none select-none pointer-events-none rotate-6">2026</div>
+            </div>
+          </div>
+        </div>
+        <div data-id="212" class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted/50 animate-bounce">
+          <i data-id="213" data-lucide="chevron-down" class="w-5 h-5"></i>
+        </div>
+      </section>
+
+      <section data-id="214" class="py-16 md:py-24 reveal">
+        <div data-id="215" class="max-w-7xl mx-auto px-5 md:px-8">
+          <h2 data-id="216" class="font-bebas text-4xl md:text-5xl text-white tracking-wider text-center mb-12">SHOP BY CATEGORY</h2>
+          <div data-id="217" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div data-id="218" class="cat-tile rounded-2xl p-6 flex flex-col justify-end min-h-[200px] md:min-h-[260px] cursor-pointer relative overflow-hidden" data-cat="sets-performance" style="background: linear-gradient(135deg, #D9539A 0%, #a03572 100%);">
+              <span data-id="219" class="absolute top-3 right-3 text-white/20 font-bebas text-[60px] leading-none select-none">7</span>
+              <p data-id="220" class="font-bebas text-2xl md:text-3xl text-white tracking-wider leading-tight">PERFORMANCE<br data-id="221">SETS</p>
+              <p data-id="222" class="text-white/60 text-xs mt-1">7 styles</p>
+              <p data-id="223" class="text-white text-xs mt-3 flex items-center gap-1 font-medium">SHOP NOW <span data-id="224">→</span></p>
+            </div>
+            <div data-id="225" class="cat-tile rounded-2xl p-6 flex flex-col justify-end min-h-[200px] md:min-h-[260px] cursor-pointer relative overflow-hidden" data-cat="sets-lounge" style="background: linear-gradient(135deg, #B79FD1 0%, #8468a8 100%);">
+              <span data-id="226" class="absolute top-3 right-3 text-white/20 font-bebas text-[60px] leading-none select-none">5</span>
+              <p data-id="227" class="font-bebas text-2xl md:text-3xl text-white tracking-wider leading-tight">LOUNGE<br data-id="228">SETS</p>
+              <p data-id="229" class="text-white/60 text-xs mt-1">5 styles</p>
+              <p data-id="230" class="text-white text-xs mt-3 flex items-center gap-1 font-medium">SHOP NOW <span data-id="231">→</span></p>
+            </div>
+            <div data-id="232" class="cat-tile rounded-2xl p-6 flex flex-col justify-end min-h-[200px] md:min-h-[260px] cursor-pointer relative overflow-hidden" data-cat="tops" style="background: linear-gradient(135deg, #C9A84C 0%, #9a7e30 100%);">
+              <span data-id="233" class="absolute top-3 right-3 text-white/20 font-bebas text-[60px] leading-none select-none">5</span>
+              <p data-id="234" class="font-bebas text-2xl md:text-3xl text-white tracking-wider leading-tight">TOPS</p>
+              <p data-id="235" class="text-white/60 text-xs mt-1">5 styles</p>
+              <p data-id="236" class="text-white text-xs mt-3 flex items-center gap-1 font-medium">SHOP NOW <span data-id="237">→</span></p>
+            </div>
+            <div data-id="238" class="cat-tile rounded-2xl p-6 flex flex-col justify-end min-h-[200px] md:min-h-[260px] cursor-pointer relative overflow-hidden" data-cat="bottoms" style="background: linear-gradient(135deg, #9B1B30 0%, #6d1322 100%);">
+              <span data-id="239" class="absolute top-3 right-3 text-white/20 font-bebas text-[60px] leading-none select-none">4</span>
+              <p data-id="240" class="font-bebas text-2xl md:text-3xl text-white tracking-wider leading-tight">BOTTOMS</p>
+              <p data-id="241" class="text-white/60 text-xs mt-1">4 styles</p>
+              <p data-id="242" class="text-white text-xs mt-3 flex items-center gap-1 font-medium">SHOP NOW <span data-id="243">→</span></p>
+            </div>
+            <div data-id="244" class="cat-tile rounded-2xl p-6 flex flex-col justify-end min-h-[200px] md:min-h-[260px] cursor-pointer relative overflow-hidden col-span-2 md:col-span-1" data-cat="statement" style="background: linear-gradient(135deg, #6B7452 0%, #4d5439 100%);">
+              <span data-id="245" class="absolute top-3 right-3 text-white/20 font-bebas text-[60px] leading-none select-none">2</span>
+              <p data-id="246" class="font-bebas text-2xl md:text-3xl text-white tracking-wider leading-tight">STATEMENT</p>
+              <p data-id="247" class="text-white/60 text-xs mt-1">2 styles</p>
+              <p data-id="248" class="text-white text-xs mt-3 flex items-center gap-1 font-medium">SHOP NOW <span data-id="249">→</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section data-id="250" class="py-16 md:py-24 reveal">
+        <div data-id="251" class="max-w-7xl mx-auto px-5 md:px-8">
+          <div data-id="252" class="flex items-end justify-between mb-10">
+            <div data-id="253">
+              <h2 data-id="254" class="font-bebas text-4xl md:text-5xl text-white tracking-wider">NEW IN</h2>
+              <p data-id="255" class="text-muted text-sm mt-1">The debut capsule is here.</p>
+            </div>
+            <div data-id="256" class="flex gap-2">
+              <button data-id="257" id="carousel-prev" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:border-pink-sculpt hover:text-pink-sculpt transition-colors"><i data-id="258" data-lucide="chevron-left" class="w-5 h-5"></i></button>
+              <button data-id="259" id="carousel-next" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:border-pink-sculpt hover:text-pink-sculpt transition-colors"><i data-id="260" data-lucide="chevron-right" class="w-5 h-5"></i></button>
+            </div>
+          </div>
+          <div data-id="261" id="carousel-track" class="carousel-track flex gap-4 overflow-x-auto pb-4" style="scroll-behavior:smooth;"></div>
+        </div>
+      </section>
+
+      <section data-id="262" class="py-16 md:py-24 bg-card reveal">
+        <div data-id="263" class="max-w-7xl mx-auto px-5 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <h2 data-id="264" class="font-bebas text-4xl md:text-5xl lg:text-6xl text-white tracking-wider leading-tight">"BORN BETWEEN THE GYM AND THE GOING-OUT SCENE."</h2>
+          <div data-id="265" class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div data-id="266" class="text-center sm:text-left space-y-3">
+              <div data-id="267" class="w-12 h-12 rounded-xl bg-pink-sculpt/10 flex items-center justify-center mx-auto sm:mx-0"><i data-id="268" data-lucide="dumbbell" class="w-6 h-6 text-pink-sculpt"></i></div>
+              <h3 data-id="269" class="font-bebas text-xl tracking-wider text-white">PERFORMANCE</h3>
+              <p data-id="270" class="text-muted text-sm leading-relaxed">Built for movement, engineered for impact</p>
+            </div>
+            <div data-id="271" class="text-center sm:text-left space-y-3">
+              <div data-id="272" class="w-12 h-12 rounded-xl bg-lavender/10 flex items-center justify-center mx-auto sm:mx-0"><i data-id="273" data-lucide="sparkles" class="w-6 h-6 text-lavender"></i></div>
+              <h3 data-id="274" class="font-bebas text-xl tracking-wider text-white">STYLE</h3>
+              <p data-id="275" class="text-muted text-sm leading-relaxed">Every piece is a statement, not just a set</p>
+            </div>
+            <div data-id="276" class="text-center sm:text-left space-y-3">
+              <div data-id="277" class="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center mx-auto sm:mx-0"><i data-id="278" data-lucide="crown" class="w-6 h-6 text-gold"></i></div>
+              <h3 data-id="279" class="font-bebas text-xl tracking-wider text-white">CONFIDENCE</h3>
+              <p data-id="280" class="text-muted text-sm leading-relaxed">For women who show up for themselves — and show out for everyone watching</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section data-id="281" class="py-16 md:py-24 reveal">
+        <div data-id="282" class="max-w-7xl mx-auto px-5 md:px-8">
+          <h2 data-id="283" class="font-bebas text-4xl md:text-5xl text-white tracking-wider text-center mb-12">VIXEN FAVORITES</h2>
+          <div data-id="284" id="bestsellers-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+        </div>
+      </section>
+
+      <section data-id="285" class="py-20 md:py-32 relative overflow-hidden reveal">
+        <div data-id="286" class="absolute inset-0 mosaic-grid" id="mosaic-bg"></div>
+        <div data-id="287" class="max-w-7xl mx-auto px-5 md:px-8 text-center relative z-10">
+          <h2 data-id="288" class="font-bebas text-6xl sm:text-7xl md:text-8xl lg:text-9xl outline-text tracking-widest">THE EM EDIT</h2>
+          <button data-id="289" id="em-edit-btn" class="text-pink-sculpt text-sm font-medium mt-6 inline-flex items-center gap-2 hover:text-hover-pink transition-colors cursor-pointer bg-transparent border-none">Shop the curated collection <span data-id="290">→</span></button>
+        </div>
+      </section>
+
+      <section data-id="291" class="py-16 md:py-20 bg-pink-sculpt reveal">
+        <div data-id="292" class="max-w-3xl mx-auto px-5 md:px-8 text-center">
+          <h2 data-id="293" class="font-bebas text-4xl md:text-5xl text-white tracking-wider">JOIN THE INNER CIRCLE.</h2>
+          <p data-id="294" class="text-white/80 text-sm mt-3 mb-8">Early access. Exclusive drops. Points on every order.</p>
+          <div data-id="295" class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+            <input data-id="296" type="email" id="email-input" placeholder="Enter your email" class="flex-1 px-5 py-4 rounded-xl bg-white text-jet text-sm outline-none placeholder-muted" />
+            <button data-id="297" id="email-join-btn" class="bg-jet text-white px-8 py-4 rounded-xl font-bebas text-lg tracking-wider hover:bg-card transition-colors">JOIN</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SHOP ALL PAGE -->
+    <div data-id="298" id="page-shop" class="page-section">
+      <div data-id="299" class="max-w-7xl mx-auto px-5 md:px-8 py-10">
+        <h1 data-id="300" class="font-bebas text-5xl md:text-6xl text-white tracking-wider mb-2">SHOP ALL</h1>
+        <p data-id="301" id="product-count" class="text-muted text-sm mb-8">Showing 23 products</p>
+        <div data-id="302" class="flex flex-wrap items-center gap-3 mb-4">
+          <button data-id="303" class="filter-btn active px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wide bg-white/5 text-white border border-white/10 transition-colors" data-filter="all">All</button>
+          <button data-id="304" class="filter-btn px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wide bg-white/5 text-white/60 border border-white/10 transition-colors" data-filter="Performance Set">Performance Sets</button>
+          <button data-id="305" class="filter-btn px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wide bg-white/5 text-white/60 border border-white/10 transition-colors" data-filter="Lounge Set">Lounge Sets</button>
+          <button data-id="306" class="filter-btn px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wide bg-white/5 text-white/60 border border-white/10 transition-colors" data-filter="Top">Tops</button>
+          <button data-id="307" class="filter-btn px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wide bg-white/5 text-white/60 border border-white/10 transition-colors" data-filter="Bottom">Bottoms</button>
+          <button data-id="308" class="filter-btn px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wide bg-white/5 text-white/60 border border-white/10 transition-colors" data-filter="statement">Statement</button>
+        </div>
+        <div data-id="309" class="flex items-center gap-3 mb-8">
+          <label data-id="310" class="text-xs text-muted uppercase tracking-wide">Sort by:</label>
+          <div data-id="311" class="relative">
+            <select data-id="312" id="sort-select" class="bg-card text-white text-sm px-4 py-2 pr-10 rounded-xl border border-white/10 appearance-none outline-none cursor-pointer">
+              <option data-id="313" value="featured">Featured</option>
+              <option data-id="314" value="price-low">Price: Low → High</option>
+              <option data-id="315" value="price-high">Price: High → Low</option>
+              <option data-id="316" value="new">New Arrivals</option>
+            </select>
+            <i data-id="317" data-lucide="chevron-down" class="w-4 h-4 text-muted absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+          </div>
+        </div>
+        <div data-id="318" id="shop-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </div>
+    </div>
+
+    <!-- SETS PAGE -->
+    <div data-id="319" id="page-sets" class="page-section">
+      <div data-id="320" class="max-w-7xl mx-auto px-5 md:px-8 py-10">
+        <h1 data-id="321" class="font-bebas text-5xl md:text-6xl text-white tracking-wider mb-2">SETS</h1>
+        <p data-id="322" class="text-muted text-sm mb-8">Performance Sets + Lounge Sets — 12 styles</p>
+        <div data-id="323" id="sets-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </div>
+    </div>
+
+    <!-- TOPS PAGE -->
+    <div data-id="324" id="page-tops" class="page-section">
+      <div data-id="325" class="max-w-7xl mx-auto px-5 md:px-8 py-10">
+        <h1 data-id="326" class="font-bebas text-5xl md:text-6xl text-white tracking-wider mb-2">TOPS</h1>
+        <p data-id="327" class="text-muted text-sm mb-8">5 styles</p>
+        <div data-id="328" id="tops-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </div>
+    </div>
+
+    <!-- BOTTOMS PAGE -->
+    <div data-id="329" id="page-bottoms" class="page-section">
+      <div data-id="330" class="max-w-7xl mx-auto px-5 md:px-8 py-10">
+        <h1 data-id="331" class="font-bebas text-5xl md:text-6xl text-white tracking-wider mb-2">BOTTOMS</h1>
+        <p data-id="332" class="text-muted text-sm mb-8">4 styles</p>
+        <div data-id="333" id="bottoms-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </div>
+    </div>
+
+    <!-- STATEMENT PAGE -->
+    <div data-id="334" id="page-statement" class="page-section">
+      <div data-id="335" class="max-w-7xl mx-auto px-5 md:px-8 py-10">
+        <h1 data-id="336" class="font-bebas text-5xl md:text-6xl text-white tracking-wider mb-2">STATEMENT</h1>
+        <p data-id="337" class="text-muted text-sm mb-8">Dress & Romper — 2 styles</p>
+        <div data-id="338" id="statement-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </div>
+    </div>
+
+    <!-- ABOUT PAGE -->
+    <div data-id="339" id="page-about" class="page-section">
+      <section data-id="340" class="min-h-[50vh] flex items-center justify-center bg-gradient-to-b from-card to-jet py-20">
+        <div data-id="341" class="max-w-4xl mx-auto px-5 md:px-8 text-center">
+          <h1 data-id="342" class="font-bebas text-5xl sm:text-6xl md:text-7xl text-white tracking-wider leading-tight">SHE DIDN'T FIT THE MOLD.<br data-id="343">SHE BROKE IT.</h1>
+        </div>
+      </section>
+      <section data-id="344" class="py-16 md:py-24">
+        <div data-id="345" class="max-w-3xl mx-auto px-5 md:px-8 space-y-6">
+          <p data-id="346" class="text-white/80 text-base leading-relaxed">EVA MARIE started as a refusal. A refusal to choose between performance and style. Between the gym and the going-out scene. Between power and femininity.</p>
+          <p data-id="347" class="text-white/80 text-base leading-relaxed">We design activewear and clubwear for women who don't make those choices — because they never had to. Every set, every top, every bottom in this collection is built for the woman who shows up for herself and shows out for everyone watching.</p>
+          <p data-id="348" class="text-white/80 text-base leading-relaxed">Crafted in compression knits, washed cottons, and ribbed fabrics with our signature EM monogram — every piece is designed to move, to hold, and to make a statement the moment you put it on.</p>
+          <p data-id="349" class="text-white/80 text-base leading-relaxed">EVA MARIE is for all of her. The 6am workout her. The Saturday night her. The Tuesday afternoon running errands her. Wear it. Own it. All of it.</p>
+        </div>
+      </section>
+      <section data-id="350" class="py-16 bg-card">
+        <div data-id="351" class="max-w-5xl mx-auto px-5 md:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          <div data-id="352" class="space-y-3">
+            <div data-id="353" class="w-14 h-14 rounded-xl bg-pink-sculpt/10 flex items-center justify-center mx-auto"><i data-id="354" data-lucide="dumbbell" class="w-7 h-7 text-pink-sculpt"></i></div>
+            <h3 data-id="355" class="font-bebas text-2xl tracking-wider text-white">PERFORMANCE</h3>
+            <p data-id="356" class="text-muted text-sm">Built for movement, engineered for impact</p>
+          </div>
+          <div data-id="357" class="space-y-3">
+            <div data-id="358" class="w-14 h-14 rounded-xl bg-lavender/10 flex items-center justify-center mx-auto"><i data-id="359" data-lucide="sparkles" class="w-7 h-7 text-lavender"></i></div>
+            <h3 data-id="360" class="font-bebas text-2xl tracking-wider text-white">STYLE</h3>
+            <p data-id="361" class="text-muted text-sm">Every piece is a statement, not just a set</p>
+          </div>
+          <div data-id="362" class="space-y-3">
+            <div data-id="363" class="w-14 h-14 rounded-xl bg-gold/10 flex items-center justify-center mx-auto"><i data-id="364" data-lucide="crown" class="w-7 h-7 text-gold"></i></div>
+            <h3 data-id="365" class="font-bebas text-2xl tracking-wider text-white">CONFIDENCE</h3>
+            <p data-id="366" class="text-muted text-sm">For women who show up for themselves — and show out for everyone watching</p>
+          </div>
+        </div>
+      </section>
+      <section data-id="367" class="py-20 text-center">
+        <p data-id="368" class="font-bebas text-4xl md:text-5xl text-pink-sculpt tracking-widest">WEAR IT. OWN IT.</p>
+      </section>
+    </div>
+
+    <!-- WISHLIST PAGE -->
+    <div data-id="369" id="page-wishlist" class="page-section">
+      <div data-id="370" class="max-w-7xl mx-auto px-5 md:px-8 py-10">
+        <h1 data-id="371" class="font-bebas text-5xl md:text-6xl text-white tracking-wider mb-2">YOUR WISHLIST</h1>
+        <p data-id="372" id="wishlist-count" class="text-muted text-sm mb-8">0 items saved</p>
+        <div data-id="373" id="wishlist-empty" class="text-center py-20">
+          <i data-id="374" data-lucide="heart" class="w-16 h-16 text-muted/20 mx-auto mb-4"></i>
+          <p data-id="375" class="text-muted text-lg mb-4">Your wishlist is empty</p>
+          <button data-id="376" id="wishlist-shop-btn" class="bg-pink-sculpt text-white px-8 py-4 rounded-xl font-bebas text-lg tracking-wider hover:bg-hover-pink transition-colors">START SHOPPING</button>
+        </div>
+        <div data-id="377" id="wishlist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 hidden"></div>
+      </div>
+    </div>
+
+    <!-- SIZE GUIDE PAGE (inline) -->
+    <div data-id="378" id="page-sizeguide" class="page-section">
+      <div data-id="379" class="max-w-3xl mx-auto px-5 md:px-8 py-10">
+        <h1 data-id="380" class="font-bebas text-5xl md:text-6xl text-white tracking-wider mb-2">SIZE GUIDE</h1>
+        <p data-id="381" class="text-muted text-sm mb-8">Find your perfect fit</p>
+        <div data-id="382" class="mb-6">
+          <h3 data-id="383" class="font-bebas text-lg tracking-wider text-pink-sculpt mb-3">HOW TO MEASURE</h3>
+          <div data-id="384" class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-white/80">
+            <div data-id="385" class="bg-white/5 rounded-xl p-4"><strong data-id="386" class="text-white block mb-1">Bust</strong>Measure around the fullest part of your chest.</div>
+            <div data-id="387" class="bg-white/5 rounded-xl p-4"><strong data-id="388" class="text-white block mb-1">Waist</strong>Measure around your natural waistline.</div>
+            <div data-id="389" class="bg-white/5 rounded-xl p-4"><strong data-id="390" class="text-white block mb-1">Hips</strong>Measure around the widest part of your hips.</div>
+          </div>
+        </div>
+        <div data-id="391" class="overflow-x-auto bg-card rounded-2xl p-4">
+          <table data-id="392" class="w-full text-sm text-left">
+            <thead data-id="393"><tr data-id="394" class="border-b border-white/10">
+              <th data-id="395" class="py-3 px-4 text-muted uppercase tracking-wider text-xs font-medium">Size</th>
+              <th data-id="396" class="py-3 px-4 text-muted uppercase tracking-wider text-xs font-medium">US</th>
+              <th data-id="397" class="py-3 px-4 text-muted uppercase tracking-wider text-xs font-medium">Bust</th>
+              <th data-id="398" class="py-3 px-4 text-muted uppercase tracking-wider text-xs font-medium">Waist</th>
+              <th data-id="399" class="py-3 px-4 text-muted uppercase tracking-wider text-xs font-medium">Hips</th>
+            </tr></thead>
+            <tbody data-id="400" class="text-white/80">
+              <tr data-id="401" class="border-b border-white/5"><td data-id="402" class="py-3 px-4 font-medium text-white">XS</td><td data-id="403" class="py-3 px-4">0–2</td><td data-id="404" class="py-3 px-4">30–32"</td><td data-id="405" class="py-3 px-4">24–26"</td><td data-id="406" class="py-3 px-4">34–36"</td></tr>
+              <tr data-id="407" class="border-b border-white/5"><td data-id="408" class="py-3 px-4 font-medium text-white">S</td><td data-id="409" class="py-3 px-4">4–6</td><td data-id="410" class="py-3 px-4">32–34"</td><td data-id="411" class="py-3 px-4">26–28"</td><td data-id="412" class="py-3 px-4">36–38"</td></tr>
+              <tr data-id="413" class="border-b border-white/5"><td data-id="414" class="py-3 px-4 font-medium text-white">M</td><td data-id="415" class="py-3 px-4">8–10</td><td data-id="416" class="py-3 px-4">34–36"</td><td data-id="417" class="py-3 px-4">28–30"</td><td data-id="418" class="py-3 px-4">38–40"</td></tr>
+              <tr data-id="419" class="border-b border-white/5"><td data-id="420" class="py-3 px-4 font-medium text-white">L</td><td data-id="421" class="py-3 px-4">12–14</td><td data-id="422" class="py-3 px-4">36–38"</td><td data-id="423" class="py-3 px-4">30–32"</td><td data-id="424" class="py-3 px-4">40–42"</td></tr>
+              <tr data-id="425"><td data-id="426" class="py-3 px-4 font-medium text-white">XL</td><td data-id="427" class="py-3 px-4">16–18</td><td data-id="428" class="py-3 px-4">38–40"</td><td data-id="429" class="py-3 px-4">32–34"</td><td data-id="430" class="py-3 px-4">42–44"</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p data-id="431" class="text-xs text-muted mt-4">Model wears size S. For a more relaxed fit, we recommend sizing up.</p>
+      </div>
+    </div>
+
+    <!-- SHIPPING & RETURNS PAGE -->
+    <div data-id="432" id="page-shipping" class="page-section">
+      <div data-id="433" class="max-w-3xl mx-auto px-5 md:px-8 py-10">
+        <h1 data-id="434" class="font-bebas text-5xl md:text-6xl text-white tracking-wider mb-2">SHIPPING & RETURNS</h1>
+        <div data-id="435" class="space-y-8 mt-8">
+          <div data-id="436" class="bg-card rounded-2xl p-6 space-y-3">
+            <h3 data-id="437" class="font-bebas text-xl tracking-wider text-pink-sculpt">SHIPPING</h3>
+            <p data-id="438" class="text-white/80 text-sm leading-relaxed">Free standard shipping on all orders $75+. Standard delivery: 5–7 business days. Express delivery: 2–3 business days ($14.99). All orders ship from our fulfillment center in the U.S.</p>
+          </div>
+          <div data-id="439" class="bg-card rounded-2xl p-6 space-y-3">
+            <h3 data-id="440" class="font-bebas text-xl tracking-wider text-pink-sculpt">RETURNS & EXCHANGES</h3>
+            <p data-id="441" class="text-white/80 text-sm leading-relaxed">We accept returns within 30 days of delivery. Items must be unworn, unwashed, and have all original tags attached. Exchanges are free — just reach out to our team. Refunds are processed within 5–7 business days after we receive your return.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT PAGE -->
+    <div data-id="442" id="page-contact" class="page-section">
+      <div data-id="443" class="max-w-3xl mx-auto px-5 md:px-8 py-10">
+        <h1 data-id="444" class="font-bebas text-5xl md:text-6xl text-white tracking-wider mb-2">CONTACT US</h1>
+        <p data-id="445" class="text-muted text-sm mb-8">We'd love to hear from you.</p>
+        <div data-id="446" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div data-id="447" class="bg-card rounded-2xl p-6 space-y-2">
+            <h3 data-id="448" class="font-bebas text-lg tracking-wider text-pink-sculpt">EMAIL</h3>
+            <p data-id="449" class="text-white/80 text-sm">hello@evamarie.com</p>
+          </div>
+          <div data-id="450" class="bg-card rounded-2xl p-6 space-y-2">
+            <h3 data-id="451" class="font-bebas text-lg tracking-wider text-pink-sculpt">SOCIAL</h3>
+            <p data-id="452" class="text-white/80 text-sm">@evamarieclothing on Instagram & TikTok</p>
+          </div>
+        </div>
+        <p data-id="453" class="text-muted text-sm">Response time: within 24 hours on business days.</p>
+      </div>
+    </div>
+
+    <!-- FAQ PAGE -->
+    <div data-id="454" id="page-faq" class="page-section">
+      <div data-id="455" class="max-w-3xl mx-auto px-5 md:px-8 py-10">
+        <h1 data-id="456" class="font-bebas text-5xl md:text-6xl text-white tracking-wider mb-8">FAQ</h1>
+        <div data-id="457" class="space-y-0 border-t border-white/10">
+          <div data-id="458" class="border-b border-white/10">
+            <button data-id="459" class="accordion-btn w-full flex items-center justify-between py-5 text-sm font-medium text-white">What sizes do you carry? <i data-id="460" data-lucide="chevron-down" class="w-4 h-4 text-muted transition-transform"></i></button>
+            <div data-id="461" class="accordion-content text-sm text-muted pb-4 leading-relaxed"><p data-id="462">We carry XS through XL. Check our Size Guide for detailed measurements.</p></div>
+          </div>
+          <div data-id="463" class="border-b border-white/10">
+            <button data-id="464" class="accordion-btn w-full flex items-center justify-between py-5 text-sm font-medium text-white">How long does shipping take? <i data-id="465" data-lucide="chevron-down" class="w-4 h-4 text-muted transition-transform"></i></button>
+            <div data-id="466" class="accordion-content text-sm text-muted pb-4 leading-relaxed"><p data-id="467">Standard shipping is 5–7 business days. Express is 2–3 business days.</p></div>
+          </div>
+          <div data-id="468" class="border-b border-white/10">
+            <button data-id="469" class="accordion-btn w-full flex items-center justify-between py-5 text-sm font-medium text-white">What is your return policy? <i data-id="470" data-lucide="chevron-down" class="w-4 h-4 text-muted transition-transform"></i></button>
+            <div data-id="471" class="accordion-content text-sm text-muted pb-4 leading-relaxed"><p data-id="472">Free returns within 30 days, items must be unworn with tags attached.</p></div>
+          </div>
+          <div data-id="473" class="border-b border-white/10">
+            <button data-id="474" class="accordion-btn w-full flex items-center justify-between py-5 text-sm font-medium text-white">Are your fabrics squat-proof? <i data-id="475" data-lucide="chevron-down" class="w-4 h-4 text-muted transition-transform"></i></button>
+            <div data-id="476" class="accordion-content text-sm text-muted pb-4 leading-relaxed"><p data-id="477">Yes! All our compression knit leggings and shorts are fully squat-proof and four-way stretch.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHECKOUT PAGE -->
+    <div data-id="478" id="page-checkout" class="page-section">
+      <div data-id="479" class="max-w-6xl mx-auto px-5 md:px-8 py-8">
+        <!-- Checkout Header -->
+        <div data-id="480" class="flex items-center justify-between mb-8">
+          <div data-id="481" class="flex items-center gap-3">
+            <div data-id="482" class="w-10 h-10 rounded-lg bg-gradient-to-br from-gold to-yellow-700 flex items-center justify-center">
+              <span data-id="483" class="font-bebas text-jet text-xl font-bold leading-none">EM</span>
+            </div>
+            <span data-id="484" class="font-bebas text-white text-xl tracking-wider hidden sm:block">EVA MARIE</span>
+          </div>
+          <button data-id="485" id="checkout-back-store" class="text-sm text-muted hover:text-white transition-colors flex items-center gap-2"><i data-id="486" data-lucide="arrow-left" class="w-4 h-4"></i> Back to Store</button>
+        </div>
+
+        <!-- Progress Steps -->
+        <div data-id="487" id="checkout-progress" class="flex items-center max-w-lg mx-auto mb-10">
+          <div data-id="488" class="flex flex-col items-center gap-1">
+            <div data-id="489" class="step-circle active" data-step="1">1</div>
+            <span data-id="490" class="text-[10px] uppercase tracking-wider text-pink-sculpt font-medium">Contact</span>
+          </div>
+          <div data-id="491" class="step-line" data-line="1"></div>
+          <div data-id="492" class="flex flex-col items-center gap-1">
+            <div data-id="493" class="step-circle inactive" data-step="2">2</div>
+            <span data-id="494" class="text-[10px] uppercase tracking-wider text-muted">Shipping</span>
+          </div>
+          <div data-id="495" class="step-line" data-line="2"></div>
+          <div data-id="496" class="flex flex-col items-center gap-1">
+            <div data-id="497" class="step-circle inactive" data-step="3">3</div>
+            <span data-id="498" class="text-[10px] uppercase tracking-wider text-muted">Payment</span>
+          </div>
+          <div data-id="499" class="step-line" data-line="3"></div>
+          <div data-id="500" class="flex flex-col items-center gap-1">
+            <div data-id="501" class="step-circle inactive" data-step="4">4</div>
+            <span data-id="502" class="text-[10px] uppercase tracking-wider text-muted">Confirm</span>
+          </div>
+        </div>
+
+        <!-- Step 1: Contact -->
+        <div data-id="503" id="checkout-step-1" class="max-w-lg mx-auto">
+          <h2 data-id="504" class="font-bebas text-3xl tracking-wider text-white mb-6">CONTACT INFORMATION</h2>
+          <div data-id="505" class="space-y-4">
+            <div data-id="506" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div data-id="507">
+                <label data-id="508" class="checkout-label">First Name *</label>
+                <input data-id="509" type="text" id="co-fname" class="checkout-input" placeholder="First name" />
+                <p data-id="510" class="error-msg" id="err-fname">First name is required</p>
+              </div>
+              <div data-id="511">
+                <label data-id="512" class="checkout-label">Last Name *</label>
+                <input data-id="513" type="text" id="co-lname" class="checkout-input" placeholder="Last name" />
+                <p data-id="514" class="error-msg" id="err-lname">Last name is required</p>
+              </div>
+            </div>
+            <div data-id="515">
+              <label data-id="516" class="checkout-label">Email Address *</label>
+              <input data-id="517" type="email" id="co-email" class="checkout-input" placeholder="you@example.com" />
+              <p data-id="518" class="error-msg" id="err-email">Valid email is required</p>
+            </div>
+            <div data-id="519">
+              <label data-id="520" class="checkout-label">Phone Number (optional)</label>
+              <input data-id="521" type="tel" id="co-phone" class="checkout-input" placeholder="(555) 123-4567" />
+            </div>
+          </div>
+          <button data-id="522" id="co-to-shipping" class="w-full bg-pink-sculpt text-white py-4 rounded-xl font-bebas text-xl tracking-wider hover:bg-hover-pink transition-colors mt-6">CONTINUE TO SHIPPING</button>
+          <button data-id="523" id="co-return-cart" class="w-full text-center text-sm text-muted hover:text-white transition-colors mt-4 flex items-center justify-center gap-2"><i data-id="524" data-lucide="arrow-left" class="w-4 h-4"></i> Return to cart</button>
+        </div>
+
+        <!-- Step 2: Shipping -->
+        <div data-id="525" id="checkout-step-2" class="max-w-lg mx-auto hidden">
+          <h2 data-id="526" class="font-bebas text-3xl tracking-wider text-white mb-6">SHIPPING ADDRESS</h2>
+          <div data-id="527" class="space-y-4">
+            <div data-id="528">
+              <label data-id="529" class="checkout-label">Address Line 1 *</label>
+              <input data-id="530" type="text" id="co-addr1" class="checkout-input" placeholder="Street address" />
+              <p data-id="531" class="error-msg" id="err-addr1">Address is required</p>
+            </div>
+            <div data-id="532">
+              <label data-id="533" class="checkout-label">Address Line 2</label>
+              <input data-id="534" type="text" id="co-addr2" class="checkout-input" placeholder="Apt, suite, etc. (optional)" />
+            </div>
+            <div data-id="535" class="grid grid-cols-2 gap-4">
+              <div data-id="536">
+                <label data-id="537" class="checkout-label">City *</label>
+                <input data-id="538" type="text" id="co-city" class="checkout-input" placeholder="City" />
+                <p data-id="539" class="error-msg" id="err-city">City is required</p>
+              </div>
+              <div data-id="540">
+                <label data-id="541" class="checkout-label">State *</label>
+                <select data-id="542" id="co-state" class="checkout-input">
+                  <option data-id="543" value="">Select state</option>
+                  <option data-id="544">AL</option><option data-id="545">AK</option><option data-id="546">AZ</option><option data-id="547">AR</option><option data-id="548">CA</option><option data-id="549">CO</option><option data-id="550">CT</option><option data-id="551">DE</option><option data-id="552">FL</option><option data-id="553">GA</option><option data-id="554">HI</option><option data-id="555">ID</option><option data-id="556">IL</option><option data-id="557">IN</option><option data-id="558">IA</option><option data-id="559">KS</option><option data-id="560">KY</option><option data-id="561">LA</option><option data-id="562">ME</option><option data-id="563" selected>MD</option><option data-id="564">MA</option><option data-id="565">MI</option><option data-id="566">MN</option><option data-id="567">MS</option><option data-id="568">MO</option><option data-id="569">MT</option><option data-id="570">NE</option><option data-id="571">NV</option><option data-id="572">NH</option><option data-id="573">NJ</option><option data-id="574">NM</option><option data-id="575">NY</option><option data-id="576">NC</option><option data-id="577">ND</option><option data-id="578">OH</option><option data-id="579">OK</option><option data-id="580">OR</option><option data-id="581">PA</option><option data-id="582">RI</option><option data-id="583">SC</option><option data-id="584">SD</option><option data-id="585">TN</option><option data-id="586">TX</option><option data-id="587">UT</option><option data-id="588">VT</option><option data-id="589">VA</option><option data-id="590">WA</option><option data-id="591">WV</option><option data-id="592">WI</option><option data-id="593">WY</option>
+                </select>
+                <p data-id="594" class="error-msg" id="err-state">State is required</p>
+              </div>
+            </div>
+            <div data-id="595" class="grid grid-cols-2 gap-4">
+              <div data-id="596">
+                <label data-id="597" class="checkout-label">ZIP Code *</label>
+                <input data-id="598" type="text" id="co-zip" class="checkout-input" placeholder="21144" />
+                <p data-id="599" class="error-msg" id="err-zip">ZIP code is required</p>
+              </div>
+              <div data-id="600">
+                <label data-id="601" class="checkout-label">Country *</label>
+                <select data-id="602" id="co-country" class="checkout-input">
+                  <option data-id="603" value="US" selected>United States</option>
+                  <option data-id="604" value="CA">Canada</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <h3 data-id="605" class="font-bebas text-xl tracking-wider text-white mt-8 mb-4">SHIPPING METHOD</h3>
+          <div data-id="606" class="space-y-3" id="shipping-methods">
+            <div data-id="607" class="shipping-card selected" data-method="standard">
+              <div data-id="608" class="flex items-center justify-between">
+                <div data-id="609" class="flex items-center gap-3">
+                  <span data-id="610" class="text-lg">📦</span>
+                  <div data-id="611">
+                    <p data-id="612" class="text-sm font-medium text-white">Standard Shipping</p>
+                    <p data-id="613" class="text-xs text-muted">5–8 business days</p>
+                  </div>
+                </div>
+                <span data-id="614" id="standard-price" class="text-sm font-medium text-white">FREE</span>
+              </div>
+            </div>
+            <div data-id="615" class="shipping-card" data-method="express">
+              <div data-id="616" class="flex items-center justify-between">
+                <div data-id="617" class="flex items-center gap-3">
+                  <span data-id="618" class="text-lg">⚡</span>
+                  <div data-id="619">
+                    <p data-id="620" class="text-sm font-medium text-white">Express Shipping</p>
+                    <p data-id="621" class="text-xs text-muted">2–3 business days</p>
+                  </div>
+                </div>
+                <span data-id="622" class="text-sm font-medium text-white">$14.99</span>
+              </div>
+            </div>
+          </div>
+          <button data-id="623" id="co-to-payment" class="w-full bg-pink-sculpt text-white py-4 rounded-xl font-bebas text-xl tracking-wider hover:bg-hover-pink transition-colors mt-6">CONTINUE TO PAYMENT</button>
+          <button data-id="624" id="co-back-1" class="w-full text-center text-sm text-muted hover:text-white transition-colors mt-4 flex items-center justify-center gap-2"><i data-id="625" data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
+        </div>
+
+        <!-- Step 3: Payment -->
+        <div data-id="626" id="checkout-step-3" class="hidden">
+          <div data-id="627" class="grid grid-cols-1 md:grid-cols-[1fr_380px] gap-8">
+            <div data-id="628">
+              <h2 data-id="629" class="font-bebas text-3xl tracking-wider text-white mb-6 flex items-center gap-2"><i data-id="630" data-lucide="lock" class="w-5 h-5 text-pink-sculpt"></i> SECURE PAYMENT</h2>
+              <!-- Demo mode banner -->
+              <div data-id="631" id="demo-banner" class="bg-gold/20 border border-gold/40 rounded-xl p-4 mb-6 hidden">
+                <p data-id="632" class="text-sm text-gold font-medium">⚙️ Demo Mode — Connect your Stripe Payment Link to accept live payments.</p>
+              </div>
+              <div data-id="633" class="space-y-4">
+                <div data-id="634">
+                  <label data-id="635" class="checkout-label">Card Number *</label>
+                  <div data-id="636" class="relative">
+                    <input data-id="637" type="text" id="co-cardnum" class="checkout-input pr-12" placeholder="4242 4242 4242 4242" maxlength="19" />
+                    <span data-id="638" id="card-type-icon" class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted font-bold"></span>
+                  </div>
+                  <p data-id="639" class="error-msg" id="err-cardnum">Valid card number is required</p>
+                </div>
+                <div data-id="640" class="grid grid-cols-2 gap-4">
+                  <div data-id="641">
+                    <label data-id="642" class="checkout-label">Expiry Date *</label>
+                    <input data-id="643" type="text" id="co-expiry" class="checkout-input" placeholder="MM/YY" maxlength="5" />
+                    <p data-id="644" class="error-msg" id="err-expiry">Valid expiry required</p>
+                  </div>
+                  <div data-id="645">
+                    <label data-id="646" class="checkout-label">CVV *</label>
+                    <input data-id="647" type="text" id="co-cvv" class="checkout-input" placeholder="123" maxlength="4" />
+                    <p data-id="648" class="error-msg" id="err-cvv">CVV is required</p>
+                  </div>
+                </div>
+                <div data-id="649">
+                  <label data-id="650" class="checkout-label">Name on Card *</label>
+                  <input data-id="651" type="text" id="co-cardname" class="checkout-input" placeholder="EVA MARIE" />
+                  <p data-id="652" class="error-msg" id="err-cardname">Name is required</p>
+                </div>
+              </div>
+              <p data-id="653" class="text-xs text-muted/60 mt-4">Your payment is secured by Stripe. Your card details are never stored on our servers.</p>
+              <p data-id="654" class="text-xs text-muted/40 mt-2">Powered by Stripe</p>
+              <button data-id="655" id="co-place-order" class="w-full bg-pink-sculpt text-white py-4 rounded-xl font-bebas text-xl tracking-wider hover:bg-hover-pink transition-colors mt-6">PLACE ORDER — $0</button>
+              <button data-id="656" id="co-back-2" class="w-full text-center text-sm text-muted hover:text-white transition-colors mt-4 flex items-center justify-center gap-2"><i data-id="657" data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
+              <!-- Trust badges -->
+              <div data-id="658" class="flex flex-wrap items-center justify-center gap-4 mt-6 text-xs text-muted/60">
+                <span data-id="659" class="flex items-center gap-1"><i data-id="660" data-lucide="lock" class="w-3 h-3"></i> SSL Secured</span>
+                <span data-id="661">·</span>
+                <span data-id="662" class="flex items-center gap-1"><i data-id="663" data-lucide="undo-2" class="w-3 h-3"></i> 30-Day Returns</span>
+                <span data-id="664">·</span>
+                <span data-id="665" class="flex items-center gap-1"><i data-id="666" data-lucide="package" class="w-3 h-3"></i> Free Shipping $75+</span>
+                <span data-id="667">·</span>
+                <span data-id="668" class="flex items-center gap-1"><i data-id="669" data-lucide="star" class="w-3 h-3"></i> Verified Reviews</span>
+              </div>
+            </div>
+            <!-- Order Summary -->
+            <div data-id="670" class="bg-card rounded-2xl p-6 h-fit">
+              <h3 data-id="671" class="font-bebas text-xl tracking-wider text-white mb-4">ORDER SUMMARY</h3>
+              <div data-id="672" id="co-summary-items" class="space-y-3 mb-4 max-h-60 overflow-y-auto"></div>
+              <div data-id="673" class="border-t border-white/10 pt-4 space-y-2 text-sm">
+                <div data-id="674" class="flex justify-between"><span data-id="675" class="text-muted">Subtotal</span><span data-id="676" id="co-summary-subtotal" class="text-white">$0</span></div>
+                <div data-id="677" class="flex justify-between"><span data-id="678" class="text-muted">Shipping</span><span data-id="679" id="co-summary-shipping" class="text-white">FREE</span></div>
+                <div data-id="680" class="flex justify-between"><span data-id="681" class="text-muted">Estimated Tax (8%)</span><span data-id="682" id="co-summary-tax" class="text-white">$0</span></div>
+                <div data-id="683" class="flex justify-between border-t border-white/10 pt-3 mt-3">
+                  <span data-id="684" class="font-medium text-white uppercase tracking-wide">Total</span>
+                  <span data-id="685" id="co-summary-total" class="font-playfair italic text-xl text-white">$0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Confirmation -->
+        <div data-id="686" id="checkout-step-4" class="hidden text-center max-w-lg mx-auto py-10">
+          <div data-id="687" class="mb-6">
+            <svg data-id="688" class="w-24 h-24 mx-auto" viewBox="0 0 96 96">
+              <circle data-id="689" class="confirm-circle" cx="48" cy="48" r="44" fill="none" stroke="#D9539A" stroke-width="3" opacity="0"/>
+              <circle data-id="690" class="confirm-circle" cx="48" cy="48" r="44" fill="#D9539A" opacity="0" style="animation-delay:0.1s"/>
+              <polyline data-id="691" class="confirm-check" points="30,50 44,64 66,36" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h2 data-id="692" class="font-bebas text-4xl md:text-5xl tracking-wider text-white mb-2">ORDER CONFIRMED!</h2>
+          <p data-id="693" id="co-confirm-msg" class="text-muted text-sm mb-2">Thank you. Your EVA MARIE pieces are on their way.</p>
+          <p data-id="694" id="co-order-num" class="text-gold text-sm font-medium mb-2">Order #EM-000000</p>
+          <p data-id="695" id="co-confirm-email" class="text-muted text-xs mb-6">A confirmation email will be sent to you@example.com</p>
+          <div data-id="696" id="co-confirm-items" class="text-left bg-card rounded-2xl p-5 mb-6 space-y-3"></div>
+          <div data-id="697" class="flex flex-col sm:flex-row gap-3">
+            <button data-id="698" id="co-continue-shop" class="flex-1 bg-pink-sculpt text-white py-4 rounded-xl font-bebas text-lg tracking-wider hover:bg-hover-pink transition-colors">CONTINUE SHOPPING</button>
+            <button data-id="699" id="co-share" class="flex-1 border border-white/20 text-white py-4 rounded-xl font-bebas text-lg tracking-wider hover:border-pink-sculpt hover:text-pink-sculpt transition-colors">SHARE YOUR ORDER</button>
+          </div>
+        </div>
+
+        <!-- Processing overlay -->
+        <div data-id="700" id="co-processing" class="hidden fixed inset-0 bg-black/80 z-[100] flex items-center justify-center">
+          <div data-id="701" class="text-center">
+            <div data-id="702" class="w-12 h-12 border-4 border-pink-sculpt/30 border-t-pink-sculpt rounded-full animate-spin mx-auto mb-4"></div>
+            <p data-id="703" class="font-bebas text-2xl tracking-wider text-white">Processing your order...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer data-id="704" class="bg-[#111111] border-t border-white/5 pt-16 pb-8">
+    <div data-id="705" class="max-w-7xl mx-auto px-5 md:px-8">
+      <div data-id="706" class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+        <div data-id="707">
+          <h4 data-id="708" class="font-bebas text-lg tracking-wider text-white mb-4">SHOP</h4>
+          <ul data-id="709" class="space-y-2 text-sm text-muted">
+            <li data-id="710"><a data-id="711" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="shop">All Products</a></li>
+            <li data-id="712"><a data-id="713" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="shop">New In</a></li>
+            <li data-id="714"><a data-id="715" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="sets">Performance Sets</a></li>
+            <li data-id="716"><a data-id="717" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="sets">Lounge Sets</a></li>
+            <li data-id="718"><a data-id="719" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="tops">Tops</a></li>
+            <li data-id="720"><a data-id="721" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="bottoms">Bottoms</a></li>
+            <li data-id="722"><a data-id="723" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="statement">Statement</a></li>
+          </ul>
+        </div>
+        <div data-id="724">
+          <h4 data-id="725" class="font-bebas text-lg tracking-wider text-white mb-4">HELP</h4>
+          <ul data-id="726" class="space-y-2 text-sm text-muted">
+            <li data-id="727"><a data-id="728" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="sizeguide">Size Guide</a></li>
+            <li data-id="729"><a data-id="730" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="shipping">Shipping & Delivery</a></li>
+            <li data-id="731"><a data-id="732" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="shipping">Returns & Exchanges</a></li>
+            <li data-id="733"><a data-id="734" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="faq">FAQ</a></li>
+            <li data-id="735"><a data-id="736" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="contact">Contact Us</a></li>
+          </ul>
+        </div>
+        <div data-id="737">
+          <h4 data-id="738" class="font-bebas text-lg tracking-wider text-white mb-4">BRAND</h4>
+          <ul data-id="739" class="space-y-2 text-sm text-muted">
+            <li data-id="740"><a data-id="741" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="about">Our Story</a></li>
+            <li data-id="742"><a data-id="743" href="#" class="footer-link hover:text-pink-sculpt transition-colors" data-page="shop">The EM Edit</a></li>
+            <li data-id="744"><a data-id="745" href="#" class="hover:text-pink-sculpt transition-colors">Press & Media</a></li>
+            <li data-id="746"><a data-id="747" href="#" class="hover:text-pink-sculpt transition-colors">Affiliate Program</a></li>
+          </ul>
+        </div>
+        <div data-id="748">
+          <h4 data-id="749" class="font-bebas text-lg tracking-wider text-white mb-4">CONNECT</h4>
+          <ul data-id="750" class="space-y-2 text-sm text-muted">
+            <li data-id="751" class="flex items-center gap-2"><i data-id="752" data-lucide="instagram" class="w-4 h-4"></i> @evamarieclothing</li>
+            <li data-id="753" class="flex items-center gap-2"><i data-id="754" data-lucide="music" class="w-4 h-4"></i> @evamarieclothing</li>
+            <li data-id="755" class="flex items-center gap-2"><i data-id="756" data-lucide="pin" class="w-4 h-4"></i> Pinterest</li>
+            <li data-id="757" class="flex items-center gap-2"><i data-id="758" data-lucide="mail" class="w-4 h-4"></i> hello@evamarie.com</li>
+          </ul>
+        </div>
+      </div>
+      <div data-id="759" class="border-t border-white/10 pt-8 space-y-4 text-center">
+        <div data-id="760" class="flex items-center justify-center gap-4 text-xs text-muted/60 flex-wrap">
+          <span data-id="761">Visa</span><span data-id="762">·</span><span data-id="763">Mastercard</span><span data-id="764">·</span><span data-id="765">Amex</span><span data-id="766">·</span><span data-id="767">PayPal</span><span data-id="768">·</span><span data-id="769">Apple Pay</span>
+        </div>
+        <p data-id="770" class="text-xs text-muted/50">© 2026 EVA MARIE. All rights reserved. | Privacy Policy | Terms of Service</p>
+        <p data-id="771" class="font-bebas text-sm tracking-widest text-muted/30">WEAR IT. OWN IT.</p>
+        <p data-id="772" class="text-xs text-muted/40 mt-4">Made by Copilot</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  // ============ CONFIG ============
+  const CONFIG = {
+    STRIPE_PAYMENT_LINK: '', // Paste your Stripe Payment Link URL here
+    STORE_NAME: 'EVA MARIE',
+    EMAIL: 'hello@evamarie.com'
+  };
+
+  // ============ AI IMAGE STORE ============
+  window.emProductImages = { sets: null, tops: null, bottoms: null, statement: null, lounge: null };
+  const imagePrompts = {
+    sets: "Professional fashion product photography, women's athletic matching set, cropped zip jacket and high-waist flare leggings, hot pink compression fabric, gold logo embroidery, studio lighting, dark background, editorial activewear, ultra high quality",
+    tops: "Professional fashion product photography, women's athletic sports bra crop top, lavender purple compression fabric, elegant minimal studio lighting, dark background, editorial activewear fashion, ultra high quality",
+    bottoms: "Professional fashion product photography, women's high-waist crossover wide-leg athletic pants, jet black compression fabric, editorial studio lighting, dark background, fashion activewear, ultra high quality",
+    statement: "Professional fashion product photography, women's lavender athletic skater dress, square neck, fit and flare silhouette, studio lighting, dark background, editorial activewear fashion, ultra high quality",
+    lounge: "Professional fashion product photography, women's matching lounge set, zip hoodie and wide-leg sweatpants, ivory cream fabric, elegant studio lighting, dark background, editorial streetwear fashion, ultra high quality"
+  };
+
+  // Generate all images on load
+  async function generateProductImages() {
+    const categories = Object.keys(imagePrompts);
+    const promises = categories.map(async (cat) => {
+      try {
+        if (window.AppSDK && window.AppSDK.ai && window.AppSDK.ai.generateImage) {
+          const result = await window.AppSDK.ai.generateImage({
+            prompt: imagePrompts[cat],
+            aspectRatio: 'square',
+            quality: 'medium'
+          });
+          window.emProductImages[cat] = `data:image/${result.format};base64,${result.image}`;
+        }
+      } catch (e) {
+        console.warn('Image generation failed for', cat, e.message);
+      }
+    });
+    await Promise.all(promises);
+    // Re-render all visible grids to show images
+    refreshAllGrids();
+  }
+
+  function getProductImageKey(product) {
+    if (product.category === 'sets' && product.type === 'Performance Set') return 'sets';
+    if (product.category === 'sets' && product.type === 'Lounge Set') return 'lounge';
+    return product.category;
+  }
+
+  function getProductImageUrl(product) {
+    const key = getProductImageKey(product);
+    return window.emProductImages[key] || null;
+  }
+
+  function refreshAllGrids() {
+    // Re-render whichever page is active
+    if (currentPage === 'home') { renderCarousel(); renderBestsellers(); }
+    if (currentPage === 'shop') { renderShopGrid(currentFilter, currentSort); }
+    if (currentPage === 'sets') { renderCategoryGrid('sets-grid', 'sets'); }
+    if (currentPage === 'tops') { renderCategoryGrid('tops-grid', 'tops'); }
+    if (currentPage === 'bottoms') { renderCategoryGrid('bottoms-grid', 'bottoms'); }
+    if (currentPage === 'statement') { renderCategoryGrid('statement-grid', 'statement'); }
+    if (currentPage === 'wishlist') { renderWishlistPage(); }
+  }
+
+  // Start image generation
+  setTimeout(() => { generateProductImages(); }, 300);
+
+  // ============ PRODUCT DATA ============
+  const products = [
+    { id:1, handle:"pink-sculpt-set", name:"Pink Sculpt Set", styleCode:"EM-SET-001", type:"Performance Set", category:"sets", price:89, colorway:"Hot Pink", colors:["#D9539A"], sizes:["XS","S","M","L","XL"], tags:["new-arrival","best-seller"], badge:"BEST SELLER", description:"The brand's hero silhouette. Cropped zip jacket and high-waist flared leggings in Pink Sculpt with gold EM/EVA embroidery. Compression knit. Four-way stretch. Moisture-wicking." },
+    { id:2, handle:"black-fusion-set", name:"Black Fusion Set", styleCode:"EM-SET-002", type:"Performance Set", category:"sets", price:84, colorway:"Jet Black", colors:["#1A1A1A"], sizes:["XS","S","M","L","XL"], tags:["new-arrival","best-seller"], badge:"BEST SELLER", description:"Mesh-panel crop bra meets high-waist flared leggings in Jet Black with gold EVA waistband embroidery." },
+    { id:3, handle:"wine-zip-up-set", name:"Wine Zip-Up Set", styleCode:"EM-SET-003", type:"Performance Set", category:"sets", price:79, colorway:"Wine / Berry", colors:["#9B1B30"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Long-sleeve zip crop top and matching bike shorts in ribbed compression knit. Berry Red colorway." },
+    { id:4, handle:"halter-bike-set", name:"Halter Bike Set", styleCode:"EM-SET-004", type:"Performance Set", category:"sets", price:74, colorway:"Red", colors:["#C0392B"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Halter crop top with contrast trim and matching high-waist bike shorts in Cherry Red." },
+    { id:5, handle:"two-tone-piped-set", name:"Two-Tone Piped Set", styleCode:"EM-SET-005", type:"Performance Set", category:"sets", price:89, colorway:"Cocoa / White", colors:["#6B4A3A","#FFFFFF"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Cocoa Brown zip crop jacket with White contrast piping paired with matching piped leggings." },
+    { id:6, handle:"piped-legging-set", name:"Piped Legging Set", styleCode:"EM-SET-006", type:"Performance Set", category:"sets", price:79, colorway:"4 Colorways", colors:["#1A1A1A","#FFFFFF","#F0A6C4","#9FC9E8"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Scoop bra and full-length high-waist legging with EM signature contrast piping." },
+    { id:7, handle:"lavender-trim-set", name:"Lavender Trim Set", styleCode:"EM-SET-007", type:"Performance Set", category:"sets", price:84, colorway:"Lavender / White", colors:["#B79FD1","#FFFFFF"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Square-neck crop bra and high-waist flared pants in Lilac Lavender with White contrast trim." },
+    { id:8, handle:"crop-tank-short-set", name:"Crop Tank & Short Set", styleCode:"EM-SET-008", type:"Lounge Set", category:"sets", price:64, colorway:"Jet Black", colors:["#1A1A1A"], sizes:["XS","S","M","L","XL"], tags:["new-arrival","best-seller"], badge:"BEST SELLER", description:"Sleeveless fitted crop tank and drawstring sweat shorts in Jet Black. EM logo left-chest embroidery." },
+    { id:9, handle:"zip-hoodie-sweats", name:"Zip Hoodie Sweats", styleCode:"EM-SET-009", type:"Lounge Set", category:"sets", price:99, colorway:"3 Colorways", colors:["#EFE7DA","#9B1B30","#1A1A1A"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Zip hoodie with ribbed cuffs and wide-leg sweatpants with piped side seam." },
+    { id:10, handle:"wide-leg-tank-set", name:"Wide-Leg Tank Set", styleCode:"EM-SET-010", type:"Lounge Set", category:"sets", price:69, colorway:"Red", colors:["#C0392B"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Scoopneck fitted tank and wide-leg pants in Red with EVA wordmark elastic waistband." },
+    { id:11, handle:"washed-lounge-set", name:"Washed Lounge Set", styleCode:"EM-SET-011", type:"Lounge Set", category:"sets", price:74, colorway:"Washed Pink", colors:["#F0A6C4"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Acid-washed boxy crop tee and lace-up drawstring flared pants in Bubblegum Pink." },
+    { id:12, handle:"stone-sweats-capsule", name:"Stone Sweats Capsule", styleCode:"EM-SET-012", type:"Lounge Set", category:"sets", price:89, colorway:"4 Colorways", colors:["#C4B9A8","#6B4A3A","#9B1B30","#1A1A1A"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"One sweatpant in 4 colorways paired with your choice of crew, crop long-sleeve, or fitted tank." },
+    { id:13, handle:"lavender-sports-bra", name:"Lavender Sports Bra", styleCode:"EM-TOP-001", type:"Top", category:"tops", price:34, colorway:"Lavender", colors:["#B79FD1"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Scoop-back sports bra in Lilac Lavender. Removable padding. EM monogram left-chest embroidery." },
+    { id:14, handle:"twist-back-top", name:"Twist-Back Top", styleCode:"EM-TOP-002", type:"Top", category:"tops", price:38, colorway:"Magenta", colors:["#C2185B"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Cap-sleeve fitted crop in Magenta with a signature crossover twist-back strap detail." },
+    { id:15, handle:"twist-front-crop", name:"Twist-Front Crop", styleCode:"EM-TOP-003", type:"Top", category:"tops", price:36, colorway:"Olive", colors:["#6B7452"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Draped twist-knot front crop in Olive with dolman sleeve." },
+    { id:16, handle:"washed-boxy-tee", name:"Washed Boxy Tee", styleCode:"EM-TOP-004", type:"Top", category:"tops", price:42, colorway:"Washed Purple", colors:["#7B68AA"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Garment-dyed oversized crop tee in Washed Purple. 100% cotton." },
+    { id:17, handle:"ribbed-tank-3-pack", name:"Ribbed Tank 3-Pack", styleCode:"EM-TOP-005", type:"Top", category:"tops", price:54, colorway:"Purple / Black / Pink", colors:["#7B68AA","#1A1A1A","#D9539A"], sizes:["XS","S","M","L","XL"], tags:["new-arrival","best-seller"], badge:"BEST SELLER", description:"Three washed ribbed fitted tanks in Purple, Jet Black, and Pink." },
+    { id:18, handle:"signature-bike-short", name:"Signature Bike Short", styleCode:"EM-BTM-001", type:"Bottom", category:"bottoms", price:44, colorway:"Jet Black", colors:["#1A1A1A"], sizes:["XS","S","M","L","XL"], tags:["new-arrival","best-seller"], badge:"BEST SELLER", description:"The EVA MARIE foundational bottom. High-waist compression bike short in Jet Black." },
+    { id:19, handle:"pocket-run-short", name:"Pocket Run Short", styleCode:"EM-BTM-002", type:"Bottom", category:"bottoms", price:48, colorway:"Jet Black", colors:["#1A1A1A"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Layered running short with hidden mesh phone pocket." },
+    { id:20, handle:"crossover-flare-pant", name:"Crossover Flare Pant", styleCode:"EM-BTM-003", type:"Bottom", category:"bottoms", price:56, colorway:"Mauve", colors:["#8B7189"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Crossover-waist flared pant in Mauve. Fitted hip and thigh." },
+    { id:21, handle:"crossover-wide-leg-pant", name:"Crossover Wide-Leg Pant", styleCode:"EM-BTM-004", type:"Bottom", category:"bottoms", price:56, colorway:"Jet Black", colors:["#1A1A1A"], sizes:["XS","S","M","L","XL"], tags:["new-arrival","best-seller"], badge:"BEST SELLER", description:"Crossover-waist wide-leg pant in Jet Black. Straight wide fall from hip to floor." },
+    { id:22, handle:"tennis-skater-dress", name:"Tennis Skater Dress", styleCode:"EM-DRS-001", type:"Dress", category:"statement", price:72, colorway:"Lavender", colors:["#B79FD1"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Square-neck fit-and-flare skater dress in Lilac Lavender with built-in compression short liner." },
+    { id:23, handle:"cutout-racerback-romper", name:"Cutout Racerback Romper", styleCode:"EM-RMP-001", type:"Romper", category:"statement", price:68, colorway:"Ivory / Cream", colors:["#EFE7DA"], sizes:["XS","S","M","L","XL"], tags:["new-arrival"], badge:"NEW", description:"Racerback bodysuit-short romper in Ivory Cream with open-back cutout detail." }
+  ];
+
+  // ============ WISHLIST STATE ============
+  let wishlist = JSON.parse(localStorage.getItem('em_wishlist') || '[]');
+  function saveWishlist() { localStorage.setItem('em_wishlist', JSON.stringify(wishlist)); updateWishlistBadge(); }
+  function toggleWishlist(productId) {
+    const idx = wishlist.indexOf(productId);
+    if (idx > -1) { wishlist.splice(idx, 1); showToast('Removed from wishlist'); }
+    else { wishlist.push(productId); showToast('Added to wishlist ♡'); }
+    saveWishlist();
+  }
+  function isWishlisted(productId) { return wishlist.includes(productId); }
+  function updateWishlistBadge() {
+    const badge = document.getElementById('wishlist-badge');
+    if (wishlist.length > 0) { badge.textContent = wishlist.length; badge.classList.remove('hidden'); }
+    else { badge.classList.add('hidden'); }
+  }
+
+  // ============ RECENTLY VIEWED ============
+  let recentlyViewed = JSON.parse(localStorage.getItem('em_recently_viewed') || '[]');
+  function addRecentlyViewed(productId) {
+    recentlyViewed = recentlyViewed.filter(id => id !== productId);
+    recentlyViewed.unshift(productId);
+    if (recentlyViewed.length > 4) recentlyViewed = recentlyViewed.slice(0, 4);
+    localStorage.setItem('em_recently_viewed', JSON.stringify(recentlyViewed));
+  }
+
+  // ============ CART STATE ============
+  let cart = JSON.parse(localStorage.getItem('em_cart') || '[]');
+  function saveCart() { localStorage.setItem('em_cart', JSON.stringify(cart)); }
+  function addToCart(productId, size, qty) {
+    const sz = size || 'M';
+    const q = qty || 1;
+    const existing = cart.find(i => i.id === productId && i.size === sz);
+    if (existing) { existing.qty += q; }
+    else { cart.push({ id: productId, size: sz, qty: q }); }
+    saveCart();
+    updateCartUI();
+    showToast('Added to cart ✓');
+  }
+  function removeFromCart(productId, size) {
+    cart = cart.filter(i => !(i.id === productId && i.size === size));
+    saveCart(); updateCartUI();
+  }
+  function updateQty(productId, size, delta) {
+    const item = cart.find(i => i.id === productId && i.size === size);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) { removeFromCart(productId, size); return; }
+    saveCart(); updateCartUI();
+  }
+  function getCartCount() { return cart.reduce((s,i) => s + i.qty, 0); }
+  function getCartTotal() { return cart.reduce((s,i) => { const p = products.find(x => x.id === i.id); return s + (p ? p.price * i.qty : 0); }, 0); }
+
+  function updateCartUI() {
+    const badge = document.getElementById('cart-badge');
+    const count = getCartCount();
+    badge.textContent = count;
+    if (count > 0) { badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
+
+    const cartList = document.getElementById('cart-list');
+    const cartEmpty = document.getElementById('cart-empty');
+    const cartFooter = document.getElementById('cart-footer');
+
+    if (cart.length === 0) {
+      cartList.classList.add('hidden');
+      cartEmpty.style.display = 'flex';
+      cartFooter.classList.add('hidden');
+      return;
+    }
+    cartEmpty.style.display = 'none';
+    cartList.classList.remove('hidden');
+    cartFooter.classList.remove('hidden');
+
+    cartList.innerHTML = cart.map(item => {
+      const p = products.find(x => x.id === item.id);
+      if (!p) return '';
+      const imgUrl = getProductImageUrl(p);
+      const imgHTML = imgUrl
+        ? `<img src="${imgUrl}" alt="${p.name}" class="w-full h-full object-cover rounded-lg">`
+        : `<span class="font-bebas text-[10px] text-white/30">${p.styleCode.split('-').pop()}</span>`;
+      const bgStyle = imgUrl ? '' : `style="background:${p.colors[0] === '#1A1A1A' ? 'linear-gradient(135deg, #333 0%, #1A1A1A 100%)' : 'linear-gradient(135deg, ' + p.colors[0] + '40 0%, ' + p.colors[0] + '20 100%)'}"`;
+      return `<div class="flex items-start gap-3 bg-white/5 rounded-xl p-3">
+        <div class="w-14 h-14 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden" ${bgStyle}>${imgHTML}</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-white truncate">${p.name}</p>
+          <p class="text-xs text-muted">Size: ${item.size}</p>
+          <div class="flex items-center gap-2 mt-2">
+            <button class="cart-qty-btn w-6 h-6 rounded border border-white/20 flex items-center justify-center text-xs text-white hover:border-pink-sculpt" data-id="${p.id}" data-size="${item.size}" data-delta="-1">−</button>
+            <span class="text-sm text-white tabular-nums w-6 text-center">${item.qty}</span>
+            <button class="cart-qty-btn w-6 h-6 rounded border border-white/20 flex items-center justify-center text-xs text-white hover:border-pink-sculpt" data-id="${p.id}" data-size="${item.size}" data-delta="1">+</button>
+          </div>
+        </div>
+        <div class="text-right flex flex-col items-end gap-2">
+          <p class="font-playfair italic text-sm text-white">$${(p.price * item.qty)}</p>
+          <button class="cart-remove-btn text-muted hover:text-pink-sculpt text-xs" data-id="${p.id}" data-size="${item.size}">✕</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    const total = getCartTotal();
+    document.getElementById('cart-subtotal').textContent = '$' + total;
+    const pct = Math.min((total / 75) * 100, 100);
+    document.getElementById('shipping-bar').style.width = pct + '%';
+    document.getElementById('shipping-msg').textContent = total >= 75 ? '🎉 You qualify for FREE SHIPPING!' : `$${(75 - total)} away from FREE SHIPPING`;
+    const standardPriceEl = document.getElementById('standard-price');
+    if (standardPriceEl) standardPriceEl.textContent = total >= 75 ? 'FREE' : '$6.99';
+
+    document.querySelectorAll('.cart-qty-btn').forEach(btn => {
+      btn.addEventListener('click', function() { updateQty(parseInt(this.dataset.id), this.dataset.size, parseInt(this.dataset.delta)); });
+    });
+    document.querySelectorAll('.cart-remove-btn').forEach(btn => {
+      btn.addEventListener('click', function() { removeFromCart(parseInt(this.dataset.id), this.dataset.size); });
+    });
+  }
+
+  // ============ TOAST ============
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // ============ PRODUCT CARD RENDERER ============
+  function createProductCard(product) {
+    const card = document.createElement('div');
+    card.className = 'product-card bg-card rounded-2xl overflow-hidden cursor-pointer group';
+    const primaryColor = product.colors[0];
+    const isBlack = primaryColor === '#1A1A1A';
+    const bgStyle = isBlack
+      ? 'background: linear-gradient(135deg, #333 0%, #1A1A1A 80%);'
+      : `background: radial-gradient(ellipse at 30% 40%, ${primaryColor}50 0%, ${primaryColor}25 50%, #222222 100%);`;
+
+    const badgeHTML = product.badge
+      ? `<span class="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white z-10" style="background:${product.badge === 'BEST SELLER' ? '#9B1B30' : '#C9A84C'}">${product.badge}</span>`
+      : '';
+
+    const swatchesHTML = product.colors.map(c =>
+      `<span class="inline-block w-3.5 h-3.5 rounded-full border border-white/20" style="background:${c === '#1A1A1A' ? '#333' : c}${c === '#FFFFFF' ? ';border-color:#ccc' : ''}"></span>`
+    ).join('');
+
+    const codeShort = product.styleCode.replace('EM-', '');
+    const imgUrl = getProductImageUrl(product);
+    const liked = isWishlisted(product.id);
+
+    let imageAreaHTML;
+    if (imgUrl) {
+      imageAreaHTML = `
+        <div class="relative aspect-square overflow-hidden" style="${bgStyle}">
+          ${badgeHTML}
+          <button class="heart-btn absolute top-3 right-3 p-2 ${liked ? 'text-pink-sculpt liked' : 'text-white/30'} hover:text-pink-sculpt transition-colors z-10" data-id="${product.id}">
+            <i data-lucide="heart" class="w-5 h-5"></i>
+          </button>
+          <img src="${imgUrl}" alt="${product.name}" class="w-full h-full object-cover img-fade-in" />
+          <span class="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-black/40 text-[9px] font-medium text-white/50 uppercase tracking-wider">${product.type}</span>
+          <span class="absolute bottom-3 left-3 text-[9px] text-white/30">🤖 AI-generated preview</span>
+        </div>`;
+    } else {
+      imageAreaHTML = `
+        <div class="relative aspect-square flex items-center justify-center overflow-hidden" style="${bgStyle}">
+          ${badgeHTML}
+          <button class="heart-btn absolute top-3 right-3 p-2 ${liked ? 'text-pink-sculpt liked' : 'text-white/30'} hover:text-pink-sculpt transition-colors z-10" data-id="${product.id}">
+            <i data-lucide="heart" class="w-5 h-5"></i>
+          </button>
+          <div class="absolute inset-0 img-shimmer"></div>
+          <span class="font-bebas text-[80px] sm:text-[100px] text-white/[0.06] leading-none select-none pointer-events-none relative z-[1]">${codeShort}</span>
+          <span class="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-black/40 text-[9px] font-medium text-white/50 uppercase tracking-wider z-[1]">${product.type}</span>
+        </div>`;
+    }
+
+    card.innerHTML = `
+      ${imageAreaHTML}
+      <div class="p-4 space-y-2">
+        <h3 class="font-bebas text-lg tracking-wider text-white leading-tight">${product.name}</h3>
+        <p class="text-pink-sculpt text-xs font-medium uppercase tracking-wide">${product.type}</p>
+        <div class="flex items-center justify-between">
+          <span class="font-playfair italic text-lg text-white">$${product.price}</span>
+          <div class="flex items-center gap-1">${swatchesHTML}</div>
+        </div>
+        <div class="add-btn pt-2">
+          <button class="quick-add-btn w-full bg-pink-sculpt text-white py-3 rounded-xl font-bebas text-sm tracking-wider hover:bg-hover-pink transition-colors" data-id="${product.id}">ADD TO CART</button>
+        </div>
+      </div>`;
+    return card;
+  }
+
+  // ============ RENDER FUNCTIONS ============
+  function renderCarousel() {
+    const track = document.getElementById('carousel-track');
+    const featured = products.slice(0, 6);
+    track.innerHTML = '';
+    featured.forEach(p => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex-shrink-0 w-[260px] sm:w-[280px] md:w-[300px]';
+      wrapper.appendChild(createProductCard(p));
+      track.appendChild(wrapper);
+    });
+    bindProductCardEvents(track);
+  }
+
+  function renderBestsellers() {
+    const grid = document.getElementById('bestsellers-grid');
+    const best = products.filter(p => p.tags.includes('best-seller'));
+    grid.innerHTML = '';
+    best.forEach(p => grid.appendChild(createProductCard(p)));
+    bindProductCardEvents(grid);
+  }
+
+  function renderShopGrid(filter, sort) {
+    const grid = document.getElementById('shop-grid');
+    let items = [...products];
+    if (filter && filter !== 'all') {
+      if (filter === 'statement') { items = items.filter(p => p.category === 'statement'); }
+      else { items = items.filter(p => p.type === filter); }
+    }
+    if (sort === 'price-low') items.sort((a,b) => a.price - b.price);
+    else if (sort === 'price-high') items.sort((a,b) => b.price - a.price);
+    else if (sort === 'new') items = items.filter(p => p.tags.includes('new-arrival'));
+
+    document.getElementById('product-count').textContent = `Showing ${items.length} product${items.length !== 1 ? 's' : ''}`;
+    grid.innerHTML = '';
+    items.forEach(p => grid.appendChild(createProductCard(p)));
+    bindProductCardEvents(grid);
+  }
+
+  function renderCategoryGrid(gridId, categoryFilter) {
+    const grid = document.getElementById(gridId);
+    let items;
+    if (typeof categoryFilter === 'function') { items = products.filter(categoryFilter); }
+    else { items = products.filter(p => p.category === categoryFilter); }
+    grid.innerHTML = '';
+    items.forEach(p => grid.appendChild(createProductCard(p)));
+    bindProductCardEvents(grid);
+  }
+
+  function renderWishlistPage() {
+    const grid = document.getElementById('wishlist-grid');
+    const empty = document.getElementById('wishlist-empty');
+    const count = document.getElementById('wishlist-count');
+    const items = products.filter(p => wishlist.includes(p.id));
+    count.textContent = `${items.length} item${items.length !== 1 ? 's' : ''} saved`;
+    if (items.length === 0) { empty.classList.remove('hidden'); grid.classList.add('hidden'); return; }
+    empty.classList.add('hidden');
+    grid.classList.remove('hidden');
+    grid.innerHTML = '';
+    items.forEach(p => grid.appendChild(createProductCard(p)));
+    bindProductCardEvents(grid);
+  }
+
+  function bindProductCardEvents(container) {
+    if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') { lucide.createIcons(); }
+    container.querySelectorAll('.quick-add-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) { e.stopPropagation(); addToCart(parseInt(this.dataset.id)); });
+    });
+    container.querySelectorAll('.heart-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const pid = parseInt(this.dataset.id);
+        toggleWishlist(pid);
+        this.classList.toggle('liked');
+        this.classList.toggle('text-pink-sculpt', isWishlisted(pid));
+        this.classList.toggle('text-white/30', !isWishlisted(pid));
+      });
+    });
+    container.querySelectorAll('.product-card').forEach(card => {
+      card.addEventListener('click', function(e) {
+        if (e.target.closest('.quick-add-btn') || e.target.closest('.heart-btn')) return;
+        const id = this.querySelector('.quick-add-btn')?.dataset.id || this.querySelector('.heart-btn')?.dataset.id;
+        if (id) openProductModal(parseInt(id));
+      });
+    });
+  }
+
+  // ============ PRODUCT MODAL ============
+  let selectedSize = 'M';
+  let modalQty = 1;
+
+  function openProductModal(productId) {
+    const p = products.find(x => x.id === productId);
+    if (!p) return;
+    addRecentlyViewed(productId);
+    modalQty = 1;
+    document.getElementById('modal-qty').textContent = '1';
+
+    const modal = document.getElementById('product-modal');
+    const visual = document.getElementById('modal-visual');
+    const isBlack = p.colors[0] === '#1A1A1A';
+    visual.style.background = isBlack
+      ? 'linear-gradient(135deg, #333 0%, #1A1A1A 80%)'
+      : `radial-gradient(ellipse at 30% 40%, ${p.colors[0]}60 0%, ${p.colors[0]}20 50%, #222 100%)`;
+
+    // Show AI image in modal
+    const modalImg = document.getElementById('modal-product-img');
+    const aiLabel = document.getElementById('modal-ai-label');
+    const imgUrl = getProductImageUrl(p);
+    if (imgUrl) {
+      modalImg.src = imgUrl;
+      modalImg.alt = p.name;
+      modalImg.classList.remove('hidden');
+      modalImg.classList.add('img-fade-in');
+      aiLabel.classList.remove('hidden');
+    } else {
+      modalImg.classList.add('hidden');
+      aiLabel.classList.add('hidden');
+    }
+
+    document.getElementById('modal-watermark').textContent = p.styleCode.replace('EM-', '');
+    document.getElementById('modal-code').textContent = p.styleCode;
+    document.getElementById('modal-name').textContent = p.name;
+    document.getElementById('modal-type').textContent = p.type;
+    document.getElementById('modal-price').textContent = '$' + p.price;
+    document.getElementById('modal-desc').textContent = p.description;
+
+    const badgeArea = document.getElementById('modal-badge-area');
+    badgeArea.innerHTML = p.badge ? `<span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-white" style="background:${p.badge === 'BEST SELLER' ? '#9B1B30' : '#C9A84C'}">${p.badge}</span>` : '';
+
+    document.getElementById('modal-colors').innerHTML = p.colors.map(c =>
+      `<span class="w-7 h-7 rounded-lg border-2 border-white/20" style="background:${c === '#1A1A1A' ? '#333' : c}${c === '#FFFFFF' ? ';border-color:#ccc' : ''}"></span>`
+    ).join('') + `<span class="text-sm text-muted ml-2">${p.colorway}</span>`;
+
+    selectedSize = 'M';
+    document.getElementById('modal-sizes').innerHTML = p.sizes.map(s =>
+      `<button class="modal-size-btn w-10 h-10 rounded-lg text-sm font-medium transition-all ${s === 'M' ? 'bg-pink-sculpt text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'}" data-size="${s}">${s}</button>`
+    ).join('');
+
+    // Related products
+    const related = products.filter(x => x.id !== p.id && x.category === p.category).slice(0, 2);
+    document.getElementById('modal-related').innerHTML = related.map(r => {
+      const rBlack = r.colors[0] === '#1A1A1A';
+      const rImg = getProductImageUrl(r);
+      const rImgHTML = rImg ? `<img src="${rImg}" alt="${r.name}" class="w-full h-full object-cover rounded-lg">` : `<span class="font-bebas text-lg text-white/10">${r.styleCode.replace('EM-','')}</span>`;
+      return `<div class="related-product bg-white/5 rounded-xl p-3 cursor-pointer hover:bg-white/10 transition-colors" data-id="${r.id}">
+        <div class="aspect-square rounded-lg mb-2 flex items-center justify-center overflow-hidden" style="background:${rBlack ? 'linear-gradient(135deg,#333,#1A1A1A)' : 'radial-gradient(ellipse at 30% 40%,' + r.colors[0] + '40 0%, #222 100%)'}">
+          ${rImgHTML}
+        </div>
+        <p class="text-xs font-medium text-white truncate">${r.name}</p>
+        <p class="font-playfair italic text-xs text-muted">$${r.price}</p>
+      </div>`;
+    }).join('');
+
+    // Recently viewed
+    const rvContainer = document.getElementById('modal-recently-viewed');
+    const rvGrid = document.getElementById('modal-rv-grid');
+    const rvItems = recentlyViewed.filter(id => id !== productId).slice(0, 4);
+    if (rvItems.length > 0) {
+      rvContainer.classList.remove('hidden');
+      rvGrid.innerHTML = rvItems.map(rid => {
+        const rp = products.find(x => x.id === rid);
+        if (!rp) return '';
+        const rpImg = getProductImageUrl(rp);
+        const rpImgHTML = rpImg ? `<img src="${rpImg}" alt="${rp.name}" class="w-full h-full object-cover rounded-lg">` : `<span class="font-bebas text-sm text-white/10">${rp.styleCode.replace('EM-','')}</span>`;
+        return `<div class="rv-card bg-white/5 rounded-lg p-2 cursor-pointer hover:bg-white/10 transition-colors" data-id="${rp.id}">
+          <div class="aspect-square rounded mb-1 flex items-center justify-center overflow-hidden" style="background:${rp.colors[0]==='#1A1A1A'?'#333':'radial-gradient(ellipse,'+rp.colors[0]+'30,#222)'}">${rpImgHTML}</div>
+          <p class="text-[10px] text-white truncate">${rp.name}</p>
+        </div>`;
+      }).join('');
+    } else {
+      rvContainer.classList.add('hidden');
+    }
+
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+      if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') { lucide.createIcons(); }
+      document.querySelectorAll('.modal-size-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          selectedSize = this.dataset.size;
+          document.querySelectorAll('.modal-size-btn').forEach(b => { b.classList.remove('bg-pink-sculpt','text-white'); b.classList.add('bg-white/5','text-white/60'); });
+          this.classList.add('bg-pink-sculpt','text-white'); this.classList.remove('bg-white/5','text-white/60');
+        });
+      });
+      document.querySelectorAll('.related-product, .rv-card').forEach(el => {
+        el.addEventListener('click', function() { openProductModal(parseInt(this.dataset.id)); });
+      });
+    }, 50);
+
+    document.getElementById('modal-add-cart').dataset.id = p.id;
+  }
+
+  function closeProductModal() {
+    document.getElementById('product-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ============ CHECKOUT ============
+  let checkoutStep = 1;
+  let checkoutData = { fname:'', lname:'', email:'', phone:'', addr1:'', addr2:'', city:'', state:'', zip:'', country:'US', shippingMethod:'standard' };
+
+  function goToCheckout() {
+    closeCart();
+    checkoutStep = 1;
+    navigateTo('checkout');
+    renderCheckoutStep(1);
+  }
+
+  function renderCheckoutStep(step) {
+    checkoutStep = step;
+    document.getElementById('checkout-step-1').classList.toggle('hidden', step !== 1);
+    document.getElementById('checkout-step-2').classList.toggle('hidden', step !== 2);
+    document.getElementById('checkout-step-3').classList.toggle('hidden', step !== 3);
+    document.getElementById('checkout-step-4').classList.toggle('hidden', step !== 4);
+
+    // Update progress
+    const steps = document.querySelectorAll('#checkout-progress .step-circle');
+    const lines = document.querySelectorAll('#checkout-progress .step-line');
+    const labels = document.querySelectorAll('#checkout-progress span:not(.step-circle):not(.step-line)');
+    steps.forEach((s, i) => {
+      const n = i + 1;
+      s.classList.remove('active', 'inactive', 'completed');
+      if (n < step) { s.classList.add('completed'); s.textContent = '✓'; }
+      else if (n === step) { s.classList.add('active'); s.textContent = n; }
+      else { s.classList.add('inactive'); s.textContent = n; }
+    });
+    lines.forEach((l, i) => {
+      l.classList.toggle('completed', i + 1 < step);
+    });
+
+    if (step === 3) { renderPaymentStep(); }
+    if (step === 4) { renderConfirmation(); }
+  }
+
+  function validateStep1() {
+    let valid = true;
+    const fname = document.getElementById('co-fname').value.trim();
+    const lname = document.getElementById('co-lname').value.trim();
+    const email = document.getElementById('co-email').value.trim();
+
+    if (!fname) { document.getElementById('co-fname').classList.add('error'); document.getElementById('err-fname').classList.add('show'); valid = false; }
+    else { document.getElementById('co-fname').classList.remove('error'); document.getElementById('err-fname').classList.remove('show'); }
+    if (!lname) { document.getElementById('co-lname').classList.add('error'); document.getElementById('err-lname').classList.add('show'); valid = false; }
+    else { document.getElementById('co-lname').classList.remove('error'); document.getElementById('err-lname').classList.remove('show'); }
+    if (!email || !email.includes('@')) { document.getElementById('co-email').classList.add('error'); document.getElementById('err-email').classList.add('show'); valid = false; }
+    else { document.getElementById('co-email').classList.remove('error'); document.getElementById('err-email').classList.remove('show'); }
+
+    if (valid) { checkoutData.fname = fname; checkoutData.lname = lname; checkoutData.email = email; checkoutData.phone = document.getElementById('co-phone').value.trim(); }
+    return valid;
+  }
+
+  function validateStep2() {
+    let valid = true;
+    const fields = [
+      { id:'co-addr1', err:'err-addr1', key:'addr1' },
+      { id:'co-city', err:'err-city', key:'city' },
+      { id:'co-state', err:'err-state', key:'state' },
+      { id:'co-zip', err:'err-zip', key:'zip' }
+    ];
+    fields.forEach(f => {
+      const val = document.getElementById(f.id).value.trim();
+      if (!val) { document.getElementById(f.id).classList.add('error'); document.getElementById(f.err).classList.add('show'); valid = false; }
+      else { document.getElementById(f.id).classList.remove('error'); document.getElementById(f.err).classList.remove('show'); checkoutData[f.key] = val; }
+    });
+    checkoutData.addr2 = document.getElementById('co-addr2').value.trim();
+    checkoutData.country = document.getElementById('co-country').value;
+    return valid;
+  }
+
+  function getShippingCost() {
+    if (checkoutData.shippingMethod === 'express') return 14.99;
+    return getCartTotal() >= 75 ? 0 : 6.99;
+  }
+
+  function renderPaymentStep() {
+    const subtotal = getCartTotal();
+    const shipping = getShippingCost();
+    const tax = Math.round(subtotal * 0.08 * 100) / 100;
+    const total = Math.round((subtotal + shipping + tax) * 100) / 100;
+
+    document.getElementById('co-summary-subtotal').textContent = '$' + subtotal;
+    document.getElementById('co-summary-shipping').textContent = shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2);
+    document.getElementById('co-summary-tax').textContent = '$' + tax.toFixed(2);
+    document.getElementById('co-summary-total').textContent = '$' + total.toFixed(2);
+    document.getElementById('co-place-order').textContent = `PLACE ORDER — $${total.toFixed(2)}`;
+
+    // Render items
+    document.getElementById('co-summary-items').innerHTML = cart.map(item => {
+      const p = products.find(x => x.id === item.id);
+      if (!p) return '';
+      return `<div class="flex justify-between items-center text-sm">
+        <div><span class="text-white">${p.name}</span> <span class="text-muted">× ${item.qty}</span><br><span class="text-xs text-muted">Size: ${item.size}</span></div>
+        <span class="text-white font-medium">$${p.price * item.qty}</span>
+      </div>`;
+    }).join('');
+
+    // Demo mode banner
+    const demoBanner = document.getElementById('demo-banner');
+    if (!CONFIG.STRIPE_PAYMENT_LINK) { demoBanner.classList.remove('hidden'); }
+    else { demoBanner.classList.add('hidden'); }
+  }
+
+  function validateStep3() {
+    let valid = true;
+    const cardnum = document.getElementById('co-cardnum').value.replace(/\s/g, '');
+    const expiry = document.getElementById('co-expiry').value.trim();
+    const cvv = document.getElementById('co-cvv').value.trim();
+    const cardname = document.getElementById('co-cardname').value.trim();
+
+    if (cardnum.length < 13) { document.getElementById('co-cardnum').classList.add('error'); document.getElementById('err-cardnum').classList.add('show'); valid = false; }
+    else { document.getElementById('co-cardnum').classList.remove('error'); document.getElementById('err-cardnum').classList.remove('show'); }
+    if (!/^\d{2}\/\d{2}$/.test(expiry)) { document.getElementById('co-expiry').classList.add('error'); document.getElementById('err-expiry').classList.add('show'); valid = false; }
+    else { document.getElementById('co-expiry').classList.remove('error'); document.getElementById('err-expiry').classList.remove('show'); }
+    if (cvv.length < 3) { document.getElementById('co-cvv').classList.add('error'); document.getElementById('err-cvv').classList.add('show'); valid = false; }
+    else { document.getElementById('co-cvv').classList.remove('error'); document.getElementById('err-cvv').classList.remove('show'); }
+    if (!cardname) { document.getElementById('co-cardname').classList.add('error'); document.getElementById('err-cardname').classList.add('show'); valid = false; }
+    else { document.getElementById('co-cardname').classList.remove('error'); document.getElementById('err-cardname').classList.remove('show'); }
+    return valid;
+  }
+
+  function placeOrder() {
+    if (!validateStep3()) return;
+    const processing = document.getElementById('co-processing');
+    processing.classList.remove('hidden');
+
+    setTimeout(() => {
+      processing.classList.add('hidden');
+      if (CONFIG.STRIPE_PAYMENT_LINK) {
+        const total = getCartTotal() + getShippingCost() + Math.round(getCartTotal() * 0.08 * 100) / 100;
+        window.location.href = CONFIG.STRIPE_PAYMENT_LINK + '?amount=' + total.toFixed(2);
+        return;
+      }
+      renderCheckoutStep(4);
+    }, 1500);
+  }
+
+  function renderConfirmation() {
+    const orderNum = 'EM-' + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById('co-confirm-msg').textContent = `Thank you, ${checkoutData.fname}. Your EVA MARIE pieces are on their way.`;
+    document.getElementById('co-order-num').textContent = `Order #${orderNum}`;
+    document.getElementById('co-confirm-email').textContent = `A confirmation email will be sent to ${checkoutData.email}`;
+
+    document.getElementById('co-confirm-items').innerHTML = cart.map(item => {
+      const p = products.find(x => x.id === item.id);
+      if (!p) return '';
+      return `<div class="flex justify-between items-center text-sm">
+        <span class="text-white">${p.name} <span class="text-muted">× ${item.qty} (${item.size})</span></span>
+        <span class="text-white">$${p.price * item.qty}</span>
+      </div>`;
+    }).join('');
+
+    // Clear cart
+    cart = [];
+    saveCart();
+    updateCartUI();
+  }
+
+  // ============ PAGE NAVIGATION (SPA) ============
+  let currentPage = 'home';
+  let currentFilter = 'all';
+  let currentSort = 'featured';
+
+  function navigateTo(page) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById('page-' + page);
+    if (target) {
+      target.classList.add('active');
+      target.classList.remove('fade-in');
+      void target.offsetWidth;
+      target.classList.add('fade-in');
+    }
+    currentPage = page;
+
+    document.querySelectorAll('.nav-link').forEach(l => {
+      l.classList.toggle('text-pink-sculpt', l.dataset.page === page);
+      l.classList.toggle('text-white/80', l.dataset.page !== page);
+    });
+
+    if (page === 'shop') { renderShopGrid(currentFilter, currentSort); }
+    if (page === 'sets') { renderCategoryGrid('sets-grid', 'sets'); }
+    if (page === 'tops') { renderCategoryGrid('tops-grid', 'tops'); }
+    if (page === 'bottoms') { renderCategoryGrid('bottoms-grid', 'bottoms'); }
+    if (page === 'statement') { renderCategoryGrid('statement-grid', 'statement'); }
+    if (page === 'wishlist') { renderWishlistPage(); }
+
+    // Show/hide header and footer on checkout
+    const header = document.getElementById('main-header');
+    const footer = document.querySelector('footer');
+    const announceBar = document.querySelector('.announce-bar');
+    if (page === 'checkout') {
+      header.style.display = 'none';
+      footer.style.display = 'none';
+      announceBar.style.display = 'none';
+    } else {
+      header.style.display = '';
+      footer.style.display = '';
+      announceBar.style.display = '';
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('mobile-menu').classList.remove('open');
+    setTimeout(initReveal, 200);
+    // Re-bind FAQ accordions if needed
+    setTimeout(() => {
+      document.querySelectorAll('.accordion-btn').forEach(btn => {
+        if (!btn._bound) {
+          btn._bound = true;
+          btn.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            content.classList.toggle('open');
+            const icon = this.querySelector('i');
+            if (icon) icon.style.transform = content.classList.contains('open') ? 'rotate(180deg)' : '';
+          });
+        }
+      });
+      if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') { lucide.createIcons(); }
+    }, 100);
+  }
+
+  // ============ ANNOUNCEMENT BAR ROTATION ============
+  function rotateAnnouncements() {
+    const msgs = document.querySelectorAll('.announce-msg');
+    let current = 0;
+    setInterval(() => {
+      msgs[current].classList.remove('active');
+      current = (current + 1) % msgs.length;
+      msgs[current].classList.add('active');
+    }, 3000);
+  }
+
+  // ============ MOSAIC BACKGROUND ============
+  function buildMosaic() {
+    const colors = ['#D9539A','#B79FD1','#C9A84C','#9B1B30','#6B7452','#F0A6C4','#6B4A3A','#EFE7DA','#9FC9E8','#C0392B','#7B68AA','#8B7189'];
+    const grid = document.getElementById('mosaic-bg');
+    if (!grid) return;
+    for (let i = 0; i < 48; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'mosaic-cell';
+      cell.style.background = colors[i % colors.length];
+      cell.style.gridColumn = `span ${Math.random() > 0.5 ? 2 : 1}`;
+      grid.appendChild(cell);
+    }
+  }
+
+  // ============ SCROLL REVEAL ============
+  function initReveal() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
+  }
+
+  // ============ SEARCH ============
+  function performSearch(query) {
+    if (!query.trim()) return;
+    const results = products.filter(p =>
+      p.name.toLowerCase().includes(query.toLowerCase()) ||
+      p.type.toLowerCase().includes(query.toLowerCase()) ||
+      p.description.toLowerCase().includes(query.toLowerCase()) ||
+      p.colorway.toLowerCase().includes(query.toLowerCase())
+    );
+    navigateTo('shop');
+    const grid = document.getElementById('shop-grid');
+    grid.innerHTML = '';
+    document.getElementById('product-count').textContent = `Showing ${results.length} result${results.length !== 1 ? 's' : ''} for "${query}"`;
+    if (results.length === 0) {
+      grid.innerHTML = '<div class="col-span-full text-center py-20"><p class="text-muted text-lg">No products found</p></div>';
+    } else {
+      results.forEach(p => grid.appendChild(createProductCard(p)));
+      bindProductCardEvents(grid);
+    }
+  }
+
+  // ============ INIT ============
+  if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') { lucide.createIcons(); }
+
+  rotateAnnouncements();
+  renderCarousel();
+  renderBestsellers();
+  buildMosaic();
+  updateCartUI();
+  updateWishlistBadge();
+  initReveal();
+
+  // ============ EVENT LISTENERS ============
+
+  // Navigation links
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function(e) { e.preventDefault(); navigateTo(this.dataset.page); });
+  });
+  document.querySelectorAll('.mobile-nav-link').forEach(link => {
+    link.addEventListener('click', function(e) { e.preventDefault(); navigateTo(this.dataset.page); });
+  });
+  document.querySelectorAll('.footer-link').forEach(link => {
+    link.addEventListener('click', function(e) { e.preventDefault(); navigateTo(this.dataset.page); });
+  });
+
+  document.getElementById('logo-home').addEventListener('click', () => navigateTo('home'));
+  document.getElementById('hero-shop-btn').addEventListener('click', () => navigateTo('shop'));
+  document.getElementById('hero-look-btn').addEventListener('click', () => navigateTo('shop'));
+  document.getElementById('em-edit-btn').addEventListener('click', () => navigateTo('shop'));
+  document.getElementById('wishlist-nav-btn').addEventListener('click', () => navigateTo('wishlist'));
+  document.getElementById('wishlist-shop-btn').addEventListener('click', () => navigateTo('shop'));
+
+  // Mobile menu
+  document.getElementById('mobile-menu-btn').addEventListener('click', () => { document.getElementById('mobile-menu').classList.add('open'); });
+  document.getElementById('mobile-menu-close').addEventListener('click', () => { document.getElementById('mobile-menu').classList.remove('open'); });
+
+  // Cart
+  document.getElementById('cart-toggle').addEventListener('click', () => {
+    document.getElementById('cart-panel').classList.add('open');
+    document.getElementById('cart-overlay').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  });
+  function closeCart() {
+    document.getElementById('cart-panel').classList.remove('open');
+    document.getElementById('cart-overlay').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('cart-close').addEventListener('click', closeCart);
+  document.getElementById('cart-overlay').addEventListener('click', closeCart);
+  document.getElementById('start-shopping-btn').addEventListener('click', () => { closeCart(); navigateTo('shop'); });
+  document.getElementById('continue-shopping-btn').addEventListener('click', closeCart);
+
+  // Checkout button -> go to checkout flow
+  document.getElementById('checkout-btn').addEventListener('click', () => {
+    if (cart.length === 0) { showToast('Your cart is empty'); return; }
+    goToCheckout();
+  });
+
+  // Search
+  document.getElementById('search-toggle').addEventListener('click', () => {
+    const bar = document.getElementById('search-bar');
+    bar.classList.toggle('hidden');
+    if (!bar.classList.contains('hidden')) document.getElementById('search-input').focus();
+  });
+  document.getElementById('search-close').addEventListener('click', () => {
+    document.getElementById('search-bar').classList.add('hidden');
+    document.getElementById('search-input').value = '';
+  });
+  document.getElementById('search-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { performSearch(this.value); document.getElementById('search-bar').classList.add('hidden'); }
+  });
+
+  // Product modal
+  document.getElementById('modal-close').addEventListener('click', closeProductModal);
+  document.getElementById('product-modal').addEventListener('click', function(e) { if (e.target === this) closeProductModal(); });
+  document.getElementById('modal-add-cart').addEventListener('click', function() {
+    addToCart(parseInt(this.dataset.id), selectedSize, modalQty);
+  });
+  document.getElementById('modal-wishlist').addEventListener('click', function() {
+    const pid = parseInt(document.getElementById('modal-add-cart').dataset.id);
+    toggleWishlist(pid);
+  });
+
+  // Modal quantity
+  document.getElementById('modal-qty-minus').addEventListener('click', () => {
+    if (modalQty > 1) { modalQty--; document.getElementById('modal-qty').textContent = modalQty; }
+  });
+  document.getElementById('modal-qty-plus').addEventListener('click', () => {
+    if (modalQty < 10) { modalQty++; document.getElementById('modal-qty').textContent = modalQty; }
+  });
+
+  // Size guide
+  document.getElementById('modal-size-guide-btn').addEventListener('click', () => {
+    document.getElementById('size-guide-modal').classList.add('open');
+  });
+  document.getElementById('sg-close').addEventListener('click', () => {
+    document.getElementById('size-guide-modal').classList.remove('open');
+  });
+  document.getElementById('size-guide-modal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+
+  // Accordions
+  document.querySelectorAll('.accordion-btn').forEach(btn => {
+    btn._bound = true;
+    btn.addEventListener('click', function() {
+      const content = this.nextElementSibling;
+      content.classList.toggle('open');
+      const icon = this.querySelector('i');
+      if (icon) icon.style.transform = content.classList.contains('open') ? 'rotate(180deg)' : '';
+    });
+  });
+
+  // Carousel arrows
+  document.getElementById('carousel-prev').addEventListener('click', () => {
+    document.getElementById('carousel-track').scrollBy({ left: -310, behavior: 'smooth' });
+  });
+  document.getElementById('carousel-next').addEventListener('click', () => {
+    document.getElementById('carousel-track').scrollBy({ left: 310, behavior: 'smooth' });
+  });
+
+  // Shop filters
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      currentFilter = this.dataset.filter;
+      renderShopGrid(currentFilter, currentSort);
+    });
+  });
+
+  document.getElementById('sort-select').addEventListener('change', function() {
+    currentSort = this.value;
+    renderShopGrid(currentFilter, currentSort);
+  });
+
+  // Category tiles
+  document.querySelectorAll('.cat-tile').forEach(tile => {
+    tile.addEventListener('click', function() {
+      const cat = this.dataset.cat;
+      if (cat === 'sets-performance') {
+        navigateTo('shop');
+        setTimeout(() => {
+          currentFilter = 'Performance Set';
+          document.querySelectorAll('.filter-btn').forEach(b => { b.classList.toggle('active', b.dataset.filter === 'Performance Set'); });
+          renderShopGrid('Performance Set', currentSort);
+        }, 100);
+      } else if (cat === 'sets-lounge') {
+        navigateTo('shop');
+        setTimeout(() => {
+          currentFilter = 'Lounge Set';
+          document.querySelectorAll('.filter-btn').forEach(b => { b.classList.toggle('active', b.dataset.filter === 'Lounge Set'); });
+          renderShopGrid('Lounge Set', currentSort);
+        }, 100);
+      } else {
+        navigateTo(cat);
+      }
+    });
+  });
+
+  // Email signup
+  document.getElementById('email-join-btn').addEventListener('click', () => {
+    const email = document.getElementById('email-input').value;
+    if (email && email.includes('@')) { showToast('Welcome to the Inner Circle! 💗'); document.getElementById('email-input').value = ''; }
+    else { showToast('Please enter a valid email.'); }
+  });
+
+  // ============ CHECKOUT EVENT LISTENERS ============
+  document.getElementById('checkout-back-store').addEventListener('click', () => navigateTo('home'));
+  document.getElementById('co-return-cart').addEventListener('click', () => {
+    navigateTo('home');
+    setTimeout(() => {
+      document.getElementById('cart-panel').classList.add('open');
+      document.getElementById('cart-overlay').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }, 300);
+  });
+  document.getElementById('co-to-shipping').addEventListener('click', () => { if (validateStep1()) renderCheckoutStep(2); });
+  document.getElementById('co-back-1').addEventListener('click', () => renderCheckoutStep(1));
+  document.getElementById('co-to-payment').addEventListener('click', () => { if (validateStep2()) renderCheckoutStep(3); });
+  document.getElementById('co-back-2').addEventListener('click', () => renderCheckoutStep(2));
+  document.getElementById('co-place-order').addEventListener('click', placeOrder);
+  document.getElementById('co-continue-shop').addEventListener('click', () => navigateTo('home'));
+  document.getElementById('co-share').addEventListener('click', () => showToast('Share link copied!'));
+
+  // Shipping method selection
+  document.querySelectorAll('.shipping-card').forEach(card => {
+    card.addEventListener('click', function() {
+      document.querySelectorAll('.shipping-card').forEach(c => c.classList.remove('selected'));
+      this.classList.add('selected');
+      checkoutData.shippingMethod = this.dataset.method;
+    });
+  });
+
+  // Card number formatting
+  document.getElementById('co-cardnum').addEventListener('input', function() {
+    let v = this.value.replace(/\D/g, '').substring(0, 16);
+    let formatted = v.replace(/(.{4})/g, '$1 ').trim();
+    this.value = formatted;
+    const icon = document.getElementById('card-type-icon');
+    if (v.startsWith('4')) icon.textContent = 'VISA';
+    else if (v.startsWith('5')) icon.textContent = 'MC';
+    else if (v.startsWith('3')) icon.textContent = 'AMEX';
+    else icon.textContent = '';
+  });
+
+  // Expiry auto-slash
+  document.getElementById('co-expiry').addEventListener('input', function() {
+    let v = this.value.replace(/\D/g, '').substring(0, 4);
+    if (v.length >= 3) v = v.substring(0, 2) + '/' + v.substring(2);
+    this.value = v;
+  });
+
+  // CVV restrict
+  document.getElementById('co-cvv').addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, '').substring(0, 4);
+  });
+
+  // Escape key closes modals
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeProductModal();
+      closeCart();
+      document.getElementById('mobile-menu').classList.remove('open');
+      document.getElementById('size-guide-modal').classList.remove('open');
+    }
+  });
+  </script>
+</body>
+</html>
